@@ -1,1 +1,41 @@
-<p>layout works!</p>
+<div class="layout-container">
+    <!-- Sidebar -->
+    <div class="sidebar" [class.hidden]="!sidebarOpen">
+        <h2>Menú</h2>
+        <ul>
+            <li *ngFor="let menu of this.usuarioLogeado.menus"><a href="intranet/{{menu.ruta}}">{{menu.nombre}}</a></li>
+        </ul>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" *ngIf="sidebarOpen" (click)="toggleSidebar()"></div>
+
+    <!-- Main content -->
+    <div class="main">
+        <nav class="navbar">
+            <button class="menu-btn" (click)="toggleSidebar()">☰</button>
+            <h1>Karify - Sistema de Detección de Plagio</h1>
+            <div class="user-menu">
+                <button class="user-btn" (click)="toggleUserMenu()">
+                    <img src="UsuarioPorDefecto.png" alt="Usuario" class="user-avatar">
+                </button>
+
+                <div class="user-dropdown" *ngIf="userMenuOpen">
+                    <div class="user-info">
+                        <img src="UsuarioPorDefecto.png" alt="Usuario" class="user-avatar-large">
+                        <div>
+                            <p class="user-fullname">{{this.usuarioLogeado.nombre}}
+                                {{this.usuarioLogeado.apellidoPaterno}} {{this.usuarioLogeado.apellidoMaterno}}</p>
+                            <p class="user-role">{{this.usuarioLogeado.rol}}</p>
+                        </div>
+                    </div>
+                    <button class="logout-btn" (click)="logout()">Cerrar sesión</button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="content">
+           <router-outlet></router-outlet>
+        </main>
+    </div>
+</div>

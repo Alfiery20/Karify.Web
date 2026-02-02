@@ -1,4 +1,6 @@
-export interface InicioSesionCommandDTO {
+import { Menu } from "./Menus";
+
+export interface InicioSesionCommandResponse {
     idUsuario: number,
     codigoUniversitario: string,
     tipoDocumento: string,
@@ -15,5 +17,6 @@ export interface InicioSesionCommandDTO {
     lLenarPerfil: true,
     token: string,
     idRol: number,
-    rol: string
+    rol: string,
+    menus: Menu[]
 }

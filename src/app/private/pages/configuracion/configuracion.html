@@ -1,1 +1,82 @@
-<p>configuracion works!</p>
+<div class="form-container">
+    <h2>Actualizar Información</h2>
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="form-grid">
+
+        <!-- Código Universitario -->
+        <div class="form-group">
+            <label>Código Universitario</label>
+            <input type="text" formControlName="codigoUniversitario" />
+        </div>
+
+        <!-- Tipo Documento -->
+        <div class="form-group">
+            <label>Tipo Documento</label>
+            <select formControlName="tipoDocumento">
+                <option value="">Seleccione...</option>
+                <option value="DNI">DNI</option>
+                <option value="Carnet de Extranjería">Carnet de Extranjería</option>
+                <option value="Pasaporte">Pasaporte</option>
+                <option value="Partida de Nacimiento">Partida de Nacimiento</option>
+            </select>
+        </div>
+
+        <!-- Número Documento -->
+        <div class="form-group">
+            <label>Número Documento</label>
+            <input type="text" formControlName="numeroDocumento" />
+        </div>
+
+        <!-- Nombre -->
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" formControlName="nombre" />
+        </div>
+
+        <!-- Apellido Paterno -->
+        <div class="form-group">
+            <label>Apellido Paterno</label>
+            <input type="text" formControlName="apellidoPaterno" />
+        </div>
+
+        <!-- Apellido Materno -->
+        <div class="form-group">
+            <label>Apellido Materno</label>
+            <input type="text" formControlName="apellidoMaterno" />
+        </div>
+
+        <!-- Correo -->
+        <div class="form-group">
+            <label>Correo</label>
+            <input type="email" formControlName="correo" />
+        </div>
+
+        <!-- Teléfono -->
+        <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text" formControlName="telefono" />
+        </div>
+
+        <!-- Facultad -->
+        <div class="form-group">
+            <label>Facultad</label>
+            <select formControlName="nombreFacultad" (change)="ObtenerEscuelasPorFacultad($event)">
+                <option value="0">Seleccione...</option>
+                <option *ngFor="let facultad of this.facultades" [value]="facultad.id">{{ facultad.nombre }}</option>
+            </select>
+        </div>
+
+        <!-- Escuela -->
+        <div class="form-group">
+            <label>Escuela</label>
+            <select formControlName="nombreEscuela">
+                <option value="0">Seleccione...</option>
+                <option *ngFor="let escuela of this.escuelas" [value]="escuela.id">{{ escuela.nombre }}</option>
+            </select>
+        </div>
+
+        <!-- Botón -->
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">Guardar cambios</button>
+        </div>
+    </form>
+</div>

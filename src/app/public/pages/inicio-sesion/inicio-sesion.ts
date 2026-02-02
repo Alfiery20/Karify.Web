@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { AlertaServices } from '../../../core/services/alerta-services';
 import { constants } from '../../../core/models/Utils/Contants';
 import { Router } from '@angular/router';
+import { LocalStorageService } from '../../../core/services/local-storage-service';
 
 declare const google: any;
 
@@ -18,7 +19,8 @@ export class InicioSesion {
   constructor(
     private autenticacionServices: AutenticacionServices,
     private alertaServices: AlertaServices,
-    private router: Router
+    private router: Router,
+    private localStorageService: LocalStorageService
   ) {
   }
 
@@ -29,7 +31,8 @@ export class InicioSesion {
       scope: 'openid email profile',
       callback: (response: any) => {
         if (response.error) {
-          console.error('Error Google:', response);
+          this.alertaServices.close();
+          this.alertaServices.error("Error al iniciar sesión", "Ocurrió un error durante el inicio de sesión. Por favor, inténtelo de nuevo más tarde.");
           return;
         }
 
@@ -45,6 +48,9 @@ export class InicioSesion {
             } else {
               this.router.navigate(['/intranet']);
               this.alertaServices.success("Inicio de sesión exitoso", "Bienvenido a la aplicación.");
+
+              this.localStorageService.setItem('token', response.token);
+              this.localStorageService.setItem('usuario', JSON.stringify(response));
             }
           },
           (error) => {

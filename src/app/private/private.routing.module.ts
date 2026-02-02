@@ -6,6 +6,7 @@ import { GestionPermisos } from "./pages/gestion-permisos/gestion-permisos";
 import { RevisionProyecto } from "./pages/revision-proyecto/revision-proyecto";
 import { GestionProyectos } from "./pages/gestion-proyectos/gestion-proyectos";
 import { Configuracion } from "./pages/configuracion/configuracion";
+import { MensajeBase } from "./pages/mensaje-base/mensaje-base";
 
 const routes: Routes = [
     {
@@ -14,16 +15,24 @@ const routes: Routes = [
         // canActivateChild: [authorizeGuard],
         children: [
             {
+                path: '',
+                component: MensajeBase,
+                canActivate: [authorizeGuard],
+            },
+            {
                 path: 'gestionpermisos',
-                component: GestionPermisos
+                component: GestionPermisos,
+                canActivate: [authorizeGuard]
             },
             {
                 path: 'revisionproyectos',
-                component: RevisionProyecto
+                component: RevisionProyecto,
+                canActivate: [authorizeGuard]
             },
             {
                 path: 'gestionproyectos',
-                component: GestionProyectos
+                component: GestionProyectos,
+                canActivate: [authorizeGuard]
             },
             {
                 path: 'configuracion',

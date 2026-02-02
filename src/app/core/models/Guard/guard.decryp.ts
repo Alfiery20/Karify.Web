@@ -12,7 +12,7 @@ export interface GuardDecryp {
     nombreEscuela: string,
     idFacultad: number,
     nombreFacultad: string,
-    esNecesarioLLenar: boolean,
+    esNecesarioLlenar: boolean,
     // permisos: Permiso[],
     exp: number,
     iss: string

@@ -8,7 +8,7 @@ export class LocalStorageService {
     localStorage.setItem(key, value);
   }
 
-  getItem(key: string): string | null {
+  getItem(key: string): string | any {
     const item: string | null = localStorage.getItem(key);
     if (item == null) return null;
 

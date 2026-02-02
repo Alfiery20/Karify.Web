@@ -24,7 +24,7 @@ export class LoaderInterceptor implements HttpInterceptor {
             tap(
                 (event: HttpEvent<any>) => {
                     if (event instanceof HttpResponse) {
-                        // this.onEnd();
+                        this.onEnd();
                     }
                 },
                 (err: any) => {
