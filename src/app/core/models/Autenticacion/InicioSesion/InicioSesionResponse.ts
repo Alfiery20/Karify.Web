@@ -14,7 +14,7 @@ export interface InicioSesionCommandResponse {
     nombreEscuela: string,
     idFacultad: number,
     nombreFacultad: string,
-    lLenarPerfil: true,
+    llenarPerfil: true,
     token: string,
     idRol: number,
     rol: string,

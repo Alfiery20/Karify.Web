@@ -24,19 +24,14 @@ export class LoaderInterceptor implements HttpInterceptor {
             tap(
                 (event: HttpEvent<any>) => {
                     if (event instanceof HttpResponse) {
-                        this.onEnd();
+                        this.hideLoader();
                     }
                 },
                 (err: any) => {
-                    this.onEnd();
+                    this.hideLoader();
                 }
             )
         );
-    }
-    private onEnd(): void {
-        setTimeout(() => {
-            this.hideLoader();
-        }, 500);
     }
     private showLoader(): void {
         this.loaderService.loading();

@@ -1,6 +1,6 @@
 <div class="form-container">
     <h2>Actualizar Información</h2>
-    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="form-grid">
+    <form [formGroup]="userForm" class="form-grid">
 
         <!-- Código Universitario -->
         <div class="form-group">
@@ -13,10 +13,10 @@
             <label>Tipo Documento</label>
             <select formControlName="tipoDocumento">
                 <option value="">Seleccione...</option>
-                <option value="DNI">DNI</option>
-                <option value="Carnet de Extranjería">Carnet de Extranjería</option>
-                <option value="Pasaporte">Pasaporte</option>
-                <option value="Partida de Nacimiento">Partida de Nacimiento</option>
+                <option value="D">DNI</option>
+                <option value="C">Carnet de Extranjería</option>
+                <option value="P">Pasaporte</option>
+                <option value="N">Partida de Nacimiento</option>
             </select>
         </div>
 
@@ -76,7 +76,7 @@
 
         <!-- Botón -->
         <div class="form-actions">
-            <button type="submit" class="btn-submit">Guardar cambios</button>
+            <button (click)="ActualizarInformacion()" class="btn-submit">Guardar cambios</button>
         </div>
     </form>
 </div>
