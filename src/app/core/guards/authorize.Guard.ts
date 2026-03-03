@@ -10,14 +10,12 @@ export const authorizeGuard: CanActivateChildFn = (childRoute, state) => {
 
   var token = localServi.getItem('token');
   var url = (state.url).split('/')[2] ?? '/intranet';
-  console.log(1);
 
   if (token) {
     const decoded = jwtDecode<GuardDecryp>(token);
-    console.log(decoded.esNecesarioLlenar);
-    console.log(decoded.esNecesarioLlenar);
-
-    if (decoded.esNecesarioLlenar) {
+    console.log(decoded.esNecesarioLlenar == 'False');
+    
+    if (decoded.esNecesarioLlenar == 'True') {
       router.navigate(['/intranet/configuracion']);
       return true
     }

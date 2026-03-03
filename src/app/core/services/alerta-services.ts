@@ -11,10 +11,9 @@ export class AlertaServices {
     icon: SweetAlertIcon
   ) {
     return Swal.fire({
-      title,
-      text,
-      icon,
-      confirmButtonText: 'Aceptar'
+      title: title,
+      text: text,
+      icon: icon
     });
   }
 
