@@ -14,7 +14,7 @@ export const authorizeGuard: CanActivateChildFn = (childRoute, state) => {
   if (token) {
     const decoded = jwtDecode<GuardDecryp>(token);
     console.log(decoded.esNecesarioLlenar == 'False');
-    
+
     if (decoded.esNecesarioLlenar == 'True') {
       router.navigate(['/intranet/configuracion']);
       return true
