@@ -2,10 +2,10 @@ export interface VerRolResponse {
     idRol: number,
     nombre: string,
     estado: true,
-    permisos: Permiso[]
+    permisos: VerPermiso[]
 }
 
-export interface Permiso {
+export interface VerPermiso {
     idRuta: number,
     ruta: string,
     isPermiso: true

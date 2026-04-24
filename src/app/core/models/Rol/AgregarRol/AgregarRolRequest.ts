@@ -1,3 +1,8 @@
 export interface AgregarRolRequest {
-    nombre: string
+  nombre: string;
+  permisos: PermisoNuevo[];
+}
+
+export interface PermisoNuevo {
+  idRuta: number;
 }
