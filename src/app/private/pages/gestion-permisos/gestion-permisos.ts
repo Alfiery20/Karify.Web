@@ -3,9 +3,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ObtenerRolResponse } from '../../../core/models/Rol/ObtenerRol/ObtenerRolResponse';
 import { RolService } from '../../../core/services/rol-service';
-import { LucideAngularModule, Plus } from 'lucide-angular';
-import { AgregarRolRequest } from '../../../core/models/Rol/AgregarRol/AgregarRolRequest';
+import { LogIn, LucideAngularModule, Plus } from 'lucide-angular';
+import {
+  AgregarRolRequest,
+  PermisoNuevo,
+} from '../../../core/models/Rol/AgregarRol/AgregarRolRequest';
 import { AlertaServices } from '../../../core/services/alerta-services';
+import { EditarRolRequest } from '../../../core/models/Rol/EditarRol/EditarRolRequest';
+import { VerPermiso, VerRolResponse } from '../../../core/models/Rol/VerRol/VerRolResponse';
+import { Permiso } from '../../../core/models/Guard/guard.decryp';
 
 @Component({
   selector: 'app-gestion-permisos',
@@ -25,22 +31,21 @@ export class GestionPermisos implements OnInit {
 
   isModalOpen = false;
 
-  agregarRol: AgregarRolRequest = {} as AgregarRolRequest;
+  editarRolSeleccionado: EditarRolRequest = {} as EditarRolRequest;
+
+  rolSeleccionado: VerRolResponse = {} as VerRolResponse;
+
+  idRolSeleccionado = 0;
 
   constructor(
     private rolService: RolService,
-    private alertService: AlertaServices
+    private alertService: AlertaServices,
   ) {
     this.actualizarPaginacion();
   }
 
   ngOnInit(): void {
-    this.rolService.ObtenerRol(this.searchTerm).subscribe(
-      (response) => {
-        this.roles = response;
-        this.buscar()
-      }
-    )
+    this.buscar();
   }
 
   toggleSidebar() {
@@ -48,12 +53,15 @@ export class GestionPermisos implements OnInit {
   }
 
   buscar() {
-    const filtrados = this.roles.filter(u =>
-      u.nombre.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
-    this.paginaActual = 1;
-    this.totalPaginas = Math.ceil(filtrados.length / this.registrosPorPagina);
-    this.rolesPaginados = filtrados.slice(0, this.registrosPorPagina);
+    this.rolService.ObtenerRol(this.searchTerm).subscribe((response) => {
+      this.roles = response;
+      const filtrados = this.roles.filter((u) =>
+        u.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()),
+      );
+      this.paginaActual = 1;
+      this.totalPaginas = Math.ceil(filtrados.length / this.registrosPorPagina);
+      this.rolesPaginados = filtrados.slice(0, this.registrosPorPagina);
+    });
   }
 
   actualizarPaginacion() {
@@ -76,18 +84,8 @@ export class GestionPermisos implements OnInit {
     }
   }
 
-  editar(rol: ObtenerRolResponse) {
-    alert(`Editar usuario: ${rol.nombre}`);
-  }
-
   asignarPermisos(rol: ObtenerRolResponse) {
     alert(`Asignar permisos a: ${rol.nombre}`);
-  }
-
-  eliminar(rol: ObtenerRolResponse) {
-    this.roles = this.roles.filter(u => u.id !== rol.id);
-    this.actualizarPaginacion();
-    alert(`Usuario eliminado: ${rol.nombre}`);
   }
 
   abrirModal() {
@@ -96,20 +94,85 @@ export class GestionPermisos implements OnInit {
 
   cerrarModal() {
     this.isModalOpen = false;
+    this.rolSeleccionado = {} as VerRolResponse;
+    this.idRolSeleccionado = 0;
   }
 
   guardarRol() {
-    if (!this.agregarRol.nombre) return;
+    if (this.idRolSeleccionado) {
+      this.editarRol();
+    } else {
+      this.registrarRol();
+    }
+  }
+
+  registrarRol() {
+    if (!this.rolSeleccionado.nombre) return;
     this.cerrarModal();
-    this.rolService.AgregarRol(this.agregarRol).subscribe(
-      (response) => {
-        if (response.mensaje == 'OK') {
-          this.alertService.success("Rol agregado correctamente.")
-        } else {
-          this.alertService.error("Rol no ha sido agregado correctamente.")
-        }
-        this.buscar()
+    var rolNuevo: AgregarRolRequest = {
+      nombre: this.rolSeleccionado.nombre,
+      permisos: this.mappearPermisos(this.rolSeleccionado.permisos),
+    };
+    this.rolService.AgregarRol(rolNuevo).subscribe((response) => {
+      if (response.mensaje == 'OK') {
+        this.alertService.success('Rol agregado correctamente.');
+      } else {
+        this.alertService.error('Rol no ha sido agregado correctamente.');
       }
-    )
+      this.buscar();
+    });
+  }
+
+  editarRol() {
+    console.log(this.rolSeleccionado);
+
+    if (!this.rolSeleccionado.nombre) return;
+    var rolNuevo: EditarRolRequest = {
+      idRol: this.idRolSeleccionado,
+      nombre: this.rolSeleccionado.nombre,
+      permisos: this.mappearPermisos(this.rolSeleccionado.permisos),
+    };
+    this.rolService.EditarRol(rolNuevo).subscribe((response) => {
+      if (response.mensaje == 'OK') {
+        this.alertService.success('Rol editado correctamente.');
+      } else {
+        this.alertService.error('Rol no ha sido editado correctamente.');
+      }
+      this.buscar();
+    });
+    this.cerrarModal();
+  }
+
+  verRol(id: number) {
+    this.idRolSeleccionado = id;
+    this.rolService.VerRol(this.idRolSeleccionado).subscribe((response) => {
+      this.rolSeleccionado = response;
+      this.isModalOpen = true;
+    });
+  }
+
+  mappearPermisos(permisoVer: VerPermiso[]): PermisoNuevo[] {
+    console.log(permisoVer);
+
+    var permisosNuevos: PermisoNuevo[] = [];
+    permisoVer.forEach((permiso) => {
+      if (permiso.isPermiso) {
+        permisosNuevos.push({ idRuta: permiso.idRuta });
+      }
+    });
+    return permisosNuevos;
+  }
+
+  eliminarRol(rol: ObtenerRolResponse) {
+    this.alertService.confirm(`¿Estás seguro de ${rol.estado ? 'desactivar' : 'activar'} el rol ${rol.nombre}?`, () => {
+      this.rolService.EliminarRol(rol.id).subscribe((response) => {
+        if (response.mensaje == 'OK') {
+          this.alertService.success('Rol eliminado correctamente.');
+          this.buscar();
+        } else {
+          this.alertService.error('Rol no ha sido eliminado correctamente.');
+        }
+      });
+    });
   }
 }

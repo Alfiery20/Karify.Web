@@ -1,3 +1,3 @@
 export interface AgregarRolResponse {
-    mensaje: string
+  mensaje: string;
 }
