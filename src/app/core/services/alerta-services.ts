@@ -52,18 +52,8 @@ export class AlertaServices {
     });
   }
 
-  loading(message = 'Procesando...') {
-    Swal.fire({
-      title: message,
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      }
-    });
-  }
-
   close() {
-    Swal.close();
+    // Swal.close();
   }
 
   private toast(icon: SweetAlertIcon, message: string) {

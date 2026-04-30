@@ -8,13 +8,13 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { AlertaServices } from '../services/alerta-services';
+import { LoaderService } from '../services/loader-service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class LoaderInterceptor implements HttpInterceptor {
-    constructor(private loaderService: AlertaServices) { }
+    constructor(private loaderService: LoaderService) { }
     intercept(
         req: HttpRequest<any>,
         next: HttpHandler
@@ -34,9 +34,9 @@ export class LoaderInterceptor implements HttpInterceptor {
         );
     }
     private showLoader(): void {
-        this.loaderService.loading();
+        this.loaderService.show();
     }
     private hideLoader(): void {
-        this.loaderService.close();
+        this.loaderService.hide();
     }
 }

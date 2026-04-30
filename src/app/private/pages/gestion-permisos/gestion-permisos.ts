@@ -37,6 +37,8 @@ export class GestionPermisos implements OnInit {
 
   idRolSeleccionado = 0;
 
+  tituloModal = 'Agregar';
+
   constructor(
     private rolService: RolService,
     private alertService: AlertaServices,
@@ -89,6 +91,7 @@ export class GestionPermisos implements OnInit {
   }
 
   abrirModal() {
+    this.verRol(0);
     this.isModalOpen = true;
   }
 
@@ -108,7 +111,6 @@ export class GestionPermisos implements OnInit {
 
   registrarRol() {
     if (!this.rolSeleccionado.nombre) return;
-    this.cerrarModal();
     var rolNuevo: AgregarRolRequest = {
       nombre: this.rolSeleccionado.nombre,
       permisos: this.mappearPermisos(this.rolSeleccionado.permisos),
@@ -119,13 +121,12 @@ export class GestionPermisos implements OnInit {
       } else {
         this.alertService.error('Rol no ha sido agregado correctamente.');
       }
+      this.cerrarModal();
       this.buscar();
     });
   }
 
   editarRol() {
-    console.log(this.rolSeleccionado);
-
     if (!this.rolSeleccionado.nombre) return;
     var rolNuevo: EditarRolRequest = {
       idRol: this.idRolSeleccionado,
@@ -145,6 +146,7 @@ export class GestionPermisos implements OnInit {
 
   verRol(id: number) {
     this.idRolSeleccionado = id;
+    this.tituloModal = id ? 'Editar' : 'Agregar';
     this.rolService.VerRol(this.idRolSeleccionado).subscribe((response) => {
       this.rolSeleccionado = response;
       this.isModalOpen = true;
@@ -152,8 +154,6 @@ export class GestionPermisos implements OnInit {
   }
 
   mappearPermisos(permisoVer: VerPermiso[]): PermisoNuevo[] {
-    console.log(permisoVer);
-
     var permisosNuevos: PermisoNuevo[] = [];
     permisoVer.forEach((permiso) => {
       if (permiso.isPermiso) {
@@ -164,15 +164,18 @@ export class GestionPermisos implements OnInit {
   }
 
   eliminarRol(rol: ObtenerRolResponse) {
-    this.alertService.confirm(`¿Estás seguro de ${rol.estado ? 'desactivar' : 'activar'} el rol ${rol.nombre}?`, () => {
-      this.rolService.EliminarRol(rol.id).subscribe((response) => {
-        if (response.mensaje == 'OK') {
-          this.alertService.success('Rol eliminado correctamente.');
-          this.buscar();
-        } else {
-          this.alertService.error('Rol no ha sido eliminado correctamente.');
-        }
-      });
-    });
+    this.alertService.confirm(
+      `¿Estás seguro de ${rol.estado ? 'desactivar' : 'activar'} el rol ${rol.nombre}?`,
+      () => {
+        this.rolService.EliminarRol(rol.id).subscribe((response) => {
+          if (response.mensaje == 'OK') {
+            this.alertService.success(`Rol ${rol.estado ? 'desactivado' : 'activado'} correctamente.`);
+            this.buscar();
+          } else {
+            this.alertService.error(`Rol no ha sido ${rol.estado ? 'desactivado' : 'activado'} correctamente.`);
+          }
+        });
+      },
+    );
   }
 }

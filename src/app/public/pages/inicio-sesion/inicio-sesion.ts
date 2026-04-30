@@ -5,6 +5,7 @@ import { AlertaServices } from '../../../core/services/alerta-services';
 import { constants } from '../../../core/models/Utils/Contants';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../../../core/services/local-storage-service';
+import { LoaderService } from '../../../core/services/loader-service';
 
 declare const google: any;
 
@@ -19,19 +20,20 @@ export class InicioSesion {
   constructor(
     private autenticacionServices: AutenticacionServices,
     private alertaServices: AlertaServices,
+    private loadingServices: LoaderService,
     private router: Router,
     private localStorageService: LocalStorageService
   ) {
   }
 
   loginWithGoogle() {
-    this.alertaServices.loading('Redirigiendo a Google...');
+    this.loadingServices.show();
     const client = google.accounts.oauth2.initTokenClient({
       client_id: constants.clientId,
       scope: 'openid email profile',
       callback: (response: any) => {
         if (response.error) {
-          this.alertaServices.close();
+          this.loadingServices.hide();
           this.alertaServices.error("Error al iniciar sesión", "Ocurrió un error durante el inicio de sesión. Por favor, inténtelo de nuevo más tarde.");
           return;
         }
