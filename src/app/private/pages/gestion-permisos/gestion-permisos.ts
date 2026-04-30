@@ -3,15 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ObtenerRolResponse } from '../../../core/models/Rol/ObtenerRol/ObtenerRolResponse';
 import { RolService } from '../../../core/services/rol-service';
-import { LogIn, LucideAngularModule, Plus } from 'lucide-angular';
+import { AlertaServices } from '../../../core/services/alerta-services';
+import { EditarRolRequest } from '../../../core/models/Rol/EditarRol/EditarRolRequest';
+import { VerPermiso, VerRolResponse } from '../../../core/models/Rol/VerRol/VerRolResponse';
 import {
   AgregarRolRequest,
   PermisoNuevo,
 } from '../../../core/models/Rol/AgregarRol/AgregarRolRequest';
-import { AlertaServices } from '../../../core/services/alerta-services';
-import { EditarRolRequest } from '../../../core/models/Rol/EditarRol/EditarRolRequest';
-import { VerPermiso, VerRolResponse } from '../../../core/models/Rol/VerRol/VerRolResponse';
-import { Permiso } from '../../../core/models/Guard/guard.decryp';
 
 @Component({
   selector: 'app-gestion-permisos',
@@ -48,6 +46,7 @@ export class GestionPermisos implements OnInit {
 
   ngOnInit(): void {
     this.buscar();
+    this.buscar();
   }
 
   toggleSidebar() {
@@ -55,6 +54,15 @@ export class GestionPermisos implements OnInit {
   }
 
   buscar() {
+    this.rolService.ObtenerRol(this.searchTerm).subscribe((response) => {
+      this.roles = response;
+      const filtrados = this.roles.filter((u) =>
+        u.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()),
+      );
+      this.paginaActual = 1;
+      this.totalPaginas = Math.ceil(filtrados.length / this.registrosPorPagina);
+      this.rolesPaginados = filtrados.slice(0, this.registrosPorPagina);
+    });
     this.rolService.ObtenerRol(this.searchTerm).subscribe((response) => {
       this.roles = response;
       const filtrados = this.roles.filter((u) =>
@@ -99,6 +107,8 @@ export class GestionPermisos implements OnInit {
     this.isModalOpen = false;
     this.rolSeleccionado = {} as VerRolResponse;
     this.idRolSeleccionado = 0;
+    this.rolSeleccionado = {} as VerRolResponse;
+    this.idRolSeleccionado = 0;
   }
 
   guardarRol() {
@@ -113,7 +123,10 @@ export class GestionPermisos implements OnInit {
     if (!this.rolSeleccionado.nombre) return;
     var rolNuevo: AgregarRolRequest = {
       nombre: this.rolSeleccionado.nombre,
-      permisos: this.mappearPermisos(this.rolSeleccionado.permisos),
+      permisos:
+        this.rolSeleccionado.permisos.length > 0
+          ? this.mappearPermisos(this.rolSeleccionado.permisos)
+          : [],
     };
     this.rolService.AgregarRol(rolNuevo).subscribe((response) => {
       if (response.mensaje == 'OK') {
@@ -131,7 +144,10 @@ export class GestionPermisos implements OnInit {
     var rolNuevo: EditarRolRequest = {
       idRol: this.idRolSeleccionado,
       nombre: this.rolSeleccionado.nombre,
-      permisos: this.mappearPermisos(this.rolSeleccionado.permisos),
+      permisos:
+        this.rolSeleccionado.permisos.length > 0
+          ? this.mappearPermisos(this.rolSeleccionado.permisos)
+          : [],
     };
     this.rolService.EditarRol(rolNuevo).subscribe((response) => {
       if (response.mensaje == 'OK') {
@@ -169,10 +185,14 @@ export class GestionPermisos implements OnInit {
       () => {
         this.rolService.EliminarRol(rol.id).subscribe((response) => {
           if (response.mensaje == 'OK') {
-            this.alertService.success(`Rol ${rol.estado ? 'desactivado' : 'activado'} correctamente.`);
+            this.alertService.success(
+              `Rol ${rol.estado ? 'desactivado' : 'activado'} correctamente.`,
+            );
             this.buscar();
           } else {
-            this.alertService.error(`Rol no ha sido ${rol.estado ? 'desactivado' : 'activado'} correctamente.`);
+            this.alertService.error(
+              `Rol no ha sido ${rol.estado ? 'desactivado' : 'activado'} correctamente.`,
+            );
           }
         });
       },
