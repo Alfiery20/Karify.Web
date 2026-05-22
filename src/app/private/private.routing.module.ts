@@ -7,6 +7,7 @@ import { RevisionProyecto } from "./pages/revision-proyecto/revision-proyecto";
 import { GestionProyectos } from "./pages/gestion-proyectos/gestion-proyectos";
 import { Configuracion } from "./pages/configuracion/configuracion";
 import { MensajeBase } from "./pages/mensaje-base/mensaje-base";
+import { GestionProfesores } from "./pages/gestion-profesores/gestion-profesores";
 
 const routes: Routes = [
     {
@@ -32,6 +33,11 @@ const routes: Routes = [
             {
                 path: 'gestionproyectos',
                 component: GestionProyectos,
+                canActivate: [authorizeGuard]
+            },
+            {
+                path: 'gestionprofesores',
+                component: GestionProfesores,
                 canActivate: [authorizeGuard]
             },
             {
