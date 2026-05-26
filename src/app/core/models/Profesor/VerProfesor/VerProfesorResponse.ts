@@ -10,4 +10,5 @@ export interface VerProfesorResponse {
   correo: string;
   facultad: number;
   escuela: number;
+  rol: number;
 }

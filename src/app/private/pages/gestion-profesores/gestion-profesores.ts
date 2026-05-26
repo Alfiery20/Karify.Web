@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ObtenerProfesorRequest } from '../../../core/models/Profesor/ObtenerProfesor/ObtenerProfesorRequest';
 import { VerProfesorResponse } from '../../../core/models/Profesor/VerProfesor/VerProfesorResponse';
-import { ObtenerProfesorResponse } from '../../../core/models/DatosMaestros/ObtenerProfesor/ObtenerProfesorResponse';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProfesorService } from '../../../core/services/profesor-service';
@@ -10,6 +9,8 @@ import { AgregarProfesorRequest } from '../../../core/models/Profesor/AgregarPro
 import { DatosMaestrosService } from '../../../core/services/datos-maestros-service';
 import { ObtenerFacultadResponse } from '../../../core/models/DatosMaestros/ObtenerFacultad/ObtenerFacultadResponse';
 import { ObtenerEscuelaResponse } from '../../../core/models/DatosMaestros/ObtenerEscuela/ObtenerEscuelaResponse';
+import { EditarProfesorRequest } from '../../../core/models/Profesor/EditarProfesor/EditarProfesorRequest';
+import { ObtenerProfesorResponse } from '../../../core/models/Profesor/ObtenerProfesor/ObtenerProfesorResponse';
 
 @Component({
   selector: 'app-gestion-profesores',
@@ -28,6 +29,7 @@ export class GestionProfesores implements OnInit {
 
   facultadSeleccionada: number = 0;
   escuelaSeleccionada: number = 0;
+  rolSeleccionado: number = 0;
 
   searchProfesor: string = '';
   isModalProfesorOpen: boolean = false;
@@ -110,13 +112,13 @@ export class GestionProfesores implements OnInit {
     );
   }
 
-  guardarProfesor(): void {
+  agregarProfesor(): void {
     var request: AgregarProfesorRequest = {
       nombre: this.profesorSeleccionado.nombre,
       apellidoPaterno: this.profesorSeleccionado.apellidoPaterno,
       apellidoMaterno: this.profesorSeleccionado.apellidoMaterno,
       emeal: this.profesorSeleccionado.correo,
-      idRol: 2,
+      idRol: this.rolSeleccionado,
     };
 
     this.profesorService.AgregarProfesor(request).subscribe((response) => {
@@ -129,6 +131,44 @@ export class GestionProfesores implements OnInit {
         this.alertaService.error('Error al agregar el profesor');
       }
     });
+  }
+
+  editarProfesor(): void {
+    var request: EditarProfesorRequest = {
+      idProfesor: this.profesorSeleccionado.idProfesor,
+      nombre: this.profesorSeleccionado.nombre,
+      apellidoPaterno: this.profesorSeleccionado.apellidoPaterno,
+      apellidoMaterno: this.profesorSeleccionado.apellidoMaterno,
+      emeal: this.profesorSeleccionado.correo,
+      idRol: this.rolSeleccionado,
+    };
+
+    this.profesorService.EditarProfesor(request).subscribe((response) => {
+      if (response.mensaje == 'OK') {
+        this.alertaService.success('Profesor editado correctamente');
+        this.buscarProfesor();
+        this.cerrarModalProfesor();
+        this.actualizarPaginacion();
+      } else {
+        this.alertaService.error('Error al editar el profesor');
+      }
+    });
+  }
+
+  guardarProfesor(): void {
+    if (this.profesorSeleccionado.idProfesor) {
+      this.editarProfesor();
+    } else {
+      this.agregarProfesor();
+    }
+  }
+
+  verProfesor(idProfesor: number): void {
+    this.profesorService.VerProfesor(idProfesor).subscribe((response) => {
+      this.profesorSeleccionado = response;
+      this.rolSeleccionado = response.rol;
+    });
+    this.isModalProfesorOpen = true;
   }
 
   onFacultadChange(event: Event): void {

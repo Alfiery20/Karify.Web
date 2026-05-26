@@ -8,6 +8,9 @@ import { VerProyectoResponse } from '../../../core/models/Proyecto/VerProyecto/V
 import { ProyectoService } from '../../../core/services/proyecto-service';
 import { DatosMaestrosService } from '../../../core/services/datos-maestros-service';
 import { ObtenerProfesorResponse } from '../../../core/models/DatosMaestros/ObtenerProfesor/ObtenerProfesorResponse';
+import { AgregarProyectoRequest } from '../../../core/models/Proyecto/AgregarProyecto/AgregarProyectoRequest';
+import { AlertaServices } from '../../../core/services/alerta-services';
+import { EditarProyectoRequest } from '../../../core/models/Proyecto/EditarProyecto/EditarProyectoRequest';
 
 @Component({
   selector: 'app-gestion-proyectos',
@@ -21,6 +24,8 @@ export class GestionProyectos implements OnInit {
   proyectosPaginados: ObtenerProyectoResponse[] = [];
   proyectoSeleccionado: VerProyectoResponse = {} as VerProyectoResponse;
 
+  profesorSeleccionado: ObtenerProfesorResponse = {} as ObtenerProfesorResponse;
+
   searchProyecto: string = '';
   searchProfesor: string = '';
   isModalProyectoOpen: boolean = false;
@@ -31,9 +36,12 @@ export class GestionProyectos implements OnInit {
   elementosPorPagina: number = 5;
   totalPaginas: number = 1;
 
+  debounceTimer: any;
+
   constructor(
     private proyectoService: ProyectoService,
     private datosmaestrosService: DatosMaestrosService,
+    private alertService: AlertaServices,
   ) {
     this.actualizarPaginacion();
   }
@@ -79,6 +87,19 @@ export class GestionProyectos implements OnInit {
     }
   }
 
+  onProfesorInput(): void {
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(() => {
+      this.cargarProfesores();
+    }, 300);
+  }
+
+  seleccionarProfesor(profesor: ObtenerProfesorResponse): void {
+    this.searchProfesor = profesor.nombre;
+    this.profesorSeleccionado = profesor;
+    this.profesores = [];
+  }
+
   buscarProyecto(): void {
     if (this.searchProyecto.trim() === '') {
       this.actualizarPaginacion();
@@ -93,41 +114,66 @@ export class GestionProyectos implements OnInit {
   }
 
   abrirModalProyecto(): void {
-    this.cargarProfesores();
     this.proyectoSeleccionado = {} as VerProyectoResponse;
     this.isModalProyectoOpen = true;
   }
 
-  editarProyecto(proyecto: ObtenerProyectoResponse): void {
-    this.proyectoSeleccionado = {
-      idProyecto: proyecto.id,
-      nombre: proyecto.nombre,
-      descripcion: proyecto.descripcion,
-      profesor: 0,
-      fechaRegistro: new Date(proyecto.fechaRegistro),
-    };
-    this.isModalProyectoOpen = true;
+  verProyecto(idProyecto: number): void {
+    this.proyectoService.VerProyecto(idProyecto).subscribe((proyecto) => {
+      this.proyectoSeleccionado = proyecto;
+      this.datosmaestrosService.ObtenerProfesor(proyecto.profesor.toString()).subscribe((profesores) => {
+        this.profesores = profesores;
+      });
+      this.isModalProyectoOpen = true;
+    });
   }
 
   revisarProyecto(proyecto: ObtenerProyectoResponse): void {
     alert(`Revisando proyecto: ${proyecto.nombre}`);
   }
 
-  eliminarProyecto(proyecto: ObtenerProyectoResponse): void {
-    this.proyectos = this.proyectos.filter((p) => p.id !== proyecto.id);
-    this.actualizarPaginacion();
+  guardarProyecto(): void {
+    if (this.proyectoSeleccionado) {
+      this.agregarProyecto();
+    } else {
+      this.editarProyecto();
+    }
   }
 
-  guardarProyecto(): void {
-    if (this.proyectoSeleccionado.idProyecto === 0) {
-      const nuevoId =
-        this.proyectos.length > 0 ? Math.max(...this.proyectos.map((p) => p.id)) + 1 : 1;
-      this.proyectoSeleccionado.idProyecto = nuevoId;
-    } else {
-      const index = this.proyectos.findIndex((p) => p.id === this.proyectoSeleccionado.idProyecto);
-    }
-    this.cerrarModalProyecto();
-    this.actualizarPaginacion();
+  agregarProyecto(): void {
+    var request: AgregarProyectoRequest = {
+      nombre: this.proyectoSeleccionado.nombre || '',
+      descripcion: this.proyectoSeleccionado.descripcion || '',
+      idProfesor: this.profesorSeleccionado.codigo || 0,
+      idAlumno: 0,
+    };
+    this.proyectoService.AgregarProyecto(request).subscribe((response) => {
+      if (response.mensaje === 'OK') {
+        this.alertService.success('Proyecto agregado exitosamente');
+        this.cerrarModalProyecto();
+        this.cargarProyectos();
+      } else {
+        this.alertService.error('Error al agregar el proyecto');
+      }
+    });
+  }
+
+  editarProyecto(): void {
+    var request: EditarProyectoRequest = {
+      idProyecto: this.proyectoSeleccionado.idProyecto,
+      nombre: this.proyectoSeleccionado.nombre || '',
+      descripcion: this.proyectoSeleccionado.descripcion || '',
+      idProfesor: this.profesorSeleccionado.codigo || 0,
+    };
+    this.proyectoService.EditarProyecto(request).subscribe((response) => {
+      if (response.mensaje === 'OK') {
+        this.alertService.success('Proyecto editado exitosamente');
+        this.cerrarModalProyecto();
+        this.cargarProyectos();
+      } else {
+        this.alertService.error('Error al editar el proyecto');
+      }
+    });
   }
 
   cerrarModalProyecto(): void {

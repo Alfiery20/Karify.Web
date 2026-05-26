@@ -11,5 +11,6 @@ export interface ObtenerProfesorResponse {
   correo: string;
   facultad: string;
   escuela: string;
+  rol: string;
   completarPerfil: boolean;
 }

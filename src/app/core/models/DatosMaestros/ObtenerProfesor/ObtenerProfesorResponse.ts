@@ -1,15 +1,4 @@
 export interface ObtenerProfesorResponse {
-  idProfesor: number;
+  codigo: number;
   nombre: string;
-  apellidoPaterno: string;
-  apellidoMaterno: string;
-  tipoDocumento: string;
-  numeroDocumento: string;
-  telefono: string;
-  estado: boolean;
-  codigoUniversitario: string;
-  correo: string;
-  facultad: string;
-  escuela: string;
-  completarPerfil: boolean;
 }

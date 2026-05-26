@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { ObtenerProfesorRequest } from '../models/Profesor/ObtenerProfesor/ObtenerProfesorRequest';
 import { Observable } from 'rxjs';
 import { Api } from '../models/Utils/Api';
-import { ObtenerProfesorResponse } from '../models/DatosMaestros/ObtenerProfesor/ObtenerProfesorResponse';
 import { VerProfesorResponse } from '../models/Profesor/VerProfesor/VerProfesorResponse';
 import { AgregarProfesorRequest } from '../models/Profesor/AgregarProfesor/AgregarProfesorRequest';
 import { AgregarProfesorResponse } from '../models/Profesor/AgregarProfesor/AgregarProfesorResponse';
 import { EliminarProfesorResponse } from '../models/Profesor/EliminarProfesor/EliminarProfesorResponse';
+import { EditarProfesorRequest } from '../models/Profesor/EditarProfesor/EditarProfesorRequest';
+import { EditarProfesorResponse } from '../models/Profesor/EditarProfesor/EditarProfesorResponse';
+import { ObtenerProfesorResponse } from '../models/Profesor/ObtenerProfesor/ObtenerProfesorResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +27,13 @@ export class ProfesorService extends Api {
   AgregarProfesor(ProfesorRequest: AgregarProfesorRequest): Observable<AgregarProfesorResponse> {
     const uri = `${this.url}Profesor/agregarProfesor`;
     return this.http.post<AgregarProfesorResponse>(uri, ProfesorRequest, {
+      headers: this._headers,
+    });
+  }
+
+  EditarProfesor(ProfesorRequest: EditarProfesorRequest): Observable<EditarProfesorResponse> {
+    const uri = `${this.url}Profesor/editarProfesor`;
+    return this.http.put<EditarProfesorResponse>(uri, ProfesorRequest, {
       headers: this._headers,
     });
   }
