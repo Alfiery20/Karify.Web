@@ -38,6 +38,9 @@ export class GestionProyectos implements OnInit {
 
   debounceTimer: any;
 
+  archivoSeleccionado: File | null = null;
+  archivoBase64: string | null = null;
+
   constructor(
     private proyectoService: ProyectoService,
     private datosmaestrosService: DatosMaestrosService,
@@ -121,9 +124,11 @@ export class GestionProyectos implements OnInit {
   verProyecto(idProyecto: number): void {
     this.proyectoService.VerProyecto(idProyecto).subscribe((proyecto) => {
       this.proyectoSeleccionado = proyecto;
-      this.datosmaestrosService.ObtenerProfesor(proyecto.profesor.toString()).subscribe((profesores) => {
-        this.profesores = profesores;
-      });
+      this.datosmaestrosService
+        .ObtenerProfesor(proyecto.profesor.toString())
+        .subscribe((profesores) => {
+          this.profesores = profesores;
+        });
       this.isModalProyectoOpen = true;
     });
   }
@@ -144,6 +149,9 @@ export class GestionProyectos implements OnInit {
     var request: AgregarProyectoRequest = {
       nombre: this.proyectoSeleccionado.nombre || '',
       descripcion: this.proyectoSeleccionado.descripcion || '',
+      nombreArchivo: this.archivoSeleccionado?.name || '',
+      archivoEncriptado: this.archivoBase64 || '',
+      peso: this.archivoSeleccionado?.size || 0,
       idProfesor: this.profesorSeleccionado.codigo || 0,
       idAlumno: 0,
     };
@@ -152,6 +160,7 @@ export class GestionProyectos implements OnInit {
         this.alertService.success('Proyecto agregado exitosamente');
         this.cerrarModalProyecto();
         this.cargarProyectos();
+        this.eliminarArchivo();
       } else {
         this.alertService.error('Error al agregar el proyecto');
       }
@@ -170,10 +179,50 @@ export class GestionProyectos implements OnInit {
         this.alertService.success('Proyecto editado exitosamente');
         this.cerrarModalProyecto();
         this.cargarProyectos();
+        this.eliminarArchivo();
       } else {
         this.alertService.error('Error al editar el proyecto');
       }
     });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files?.length) {
+      return;
+    }
+
+    const file = input.files[0];
+
+    const tiposPermitidos = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+
+    if (!tiposPermitidos.includes(file.type)) {
+      alert('Solo se permiten archivos PDF, DOC o DOCX');
+      input.value = '';
+      return;
+    }
+
+    this.archivoSeleccionado = file;
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const resultado = reader.result as string;
+
+      this.archivoBase64 = resultado.split(',')[1];
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  eliminarArchivo(): void {
+    this.archivoSeleccionado = null;
+    this.archivoBase64 = null;
   }
 
   cerrarModalProyecto(): void {

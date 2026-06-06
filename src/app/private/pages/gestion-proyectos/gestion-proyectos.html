@@ -50,6 +50,7 @@
               <th class="px-6 py-3 text-center">Título</th>
               <th class="px-6 py-3 text-center">Profesor</th>
               <th class="px-6 py-3 text-center">Fecha de Registro</th>
+              <th class="px-6 py-3 text-center">Estado</th>
               <th class="px-6 py-3 text-center">Acciones</th>
             </tr>
           </thead>
@@ -58,7 +59,10 @@
               <td class="px-6 py-4 text-gray-600 text-center">#{{ proyecto.id }}</td>
               <td class="px-6 py-4 font-medium text-gray-800">{{ proyecto.nombre }}</td>
               <td class="px-6 py-4 font-medium text-gray-800">{{ proyecto.profesor }}</td>
-              <td class="px-6 py-4 font-medium text-gray-800">{{ proyecto.fechaRegistro | date: 'dd/MM/yyyy HH:mm a'  }}</td>
+              <td class="px-6 py-4 font-medium text-gray-800">{{ proyecto.estado }}</td>
+              <td class="px-6 py-4 font-medium text-gray-800">
+                {{ proyecto.fechaRegistro | date: 'dd/MM/yyyy HH:mm a' }}
+              </td>
               <td class="px-6 py-4">
                 <div class="flex items-center justify-center gap-3">
                   <button
@@ -110,7 +114,9 @@
     class="relative bg-white w-full max-w-md mx-4 rounded-2xl shadow-xl p-6 animate-fade-in max-h-[90vh] overflow-y-auto"
   >
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-lg font-semibold text-gray-800">{{ proyectoSeleccionado.idProyecto ? 'Editar' : 'Nuevo' }} Proyecto</h2>
+      <h2 class="text-lg font-semibold text-gray-800">
+        {{ proyectoSeleccionado.idProyecto ? 'Editar' : 'Nuevo' }} Proyecto
+      </h2>
       <button (click)="cerrarModalProyecto()" class="text-gray-400 hover:text-gray-600">
         <i class="bi bi-x-lg text-xl"></i>
       </button>
@@ -158,6 +164,51 @@
             {{ profesor.nombre }}
           </li>
         </ul>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm text-gray-600 mb-1">Documento del proyecto</label>
+
+      <div
+        class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-green-800 transition"
+      >
+        <input
+          #fileInput
+          type="file"
+          accept=".pdf,.doc,.docx"
+          (change)="onFileSelected($event)"
+          class="hidden"
+        />
+
+        <button
+          type="button"
+          (click)="fileInput.click()"
+          class="px-4 py-2 bg-green-800 text-white rounded-lg hover:bg-green-900 transition"
+        >
+          Seleccionar documento
+        </button>
+
+        <p class="text-xs text-gray-500 mt-2">Formatos permitidos: PDF, DOC, DOCX</p>
+
+        <div *ngIf="archivoSeleccionado" class="mt-3">
+          <div class="flex items-center justify-between bg-gray-100 rounded-lg px-3 py-2">
+            <div class="flex items-center gap-2">
+              <i class="bi bi-file-earmark-text text-green-800"></i>
+              <span class="text-sm text-gray-700">
+                {{ archivoSeleccionado.name }}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              (click)="eliminarArchivo()"
+              class="text-red-500 hover:text-red-700"
+            >
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -4,4 +4,5 @@ export interface ObtenerProyectoResponse {
   descripcion: string;
   profesor: string;
   fechaRegistro: string;
+  estado: string;
 }
