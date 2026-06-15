@@ -59,13 +59,15 @@
               <td class="px-6 py-4 text-gray-600 text-center">#{{ proyecto.id }}</td>
               <td class="px-6 py-4 font-medium text-gray-800">{{ proyecto.nombre }}</td>
               <td class="px-6 py-4 font-medium text-gray-800">{{ proyecto.profesor }}</td>
-              <td class="px-6 py-4 font-medium text-gray-800">{{ proyecto.estado }}</td>
+              <td class="px-6 py-4 font-medium text-gray-800">
+                {{ this.convertirEstado(proyecto.estado) }}
+              </td>
               <td class="px-6 py-4 font-medium text-gray-800">
                 {{ proyecto.fechaRegistro | date: 'dd/MM/yyyy HH:mm a' }}
               </td>
               <td class="px-6 py-4">
                 <div class="flex items-center justify-center gap-3">
-                  <button
+                  <button *ngIf="proyecto.estado == 'P'"
                     (click)="verProyecto(proyecto.id)"
                     class="w-10 h-10 flex items-center justify-center rounded-full text-white shadow-md transition hover:scale-110 hover:shadow-lg"
                     style="background-color: #006400"
@@ -181,7 +183,7 @@
           class="hidden"
         />
 
-        <button
+        <button [disabled]="true"
           type="button"
           (click)="fileInput.click()"
           class="px-4 py-2 bg-green-800 text-white rounded-lg hover:bg-green-900 transition"

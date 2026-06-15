@@ -9,6 +9,10 @@ import { AgregarProyectoRequest } from '../models/Proyecto/AgregarProyecto/Agreg
 import { AgregarProyectoResponse } from '../models/Proyecto/AgregarProyecto/AgregarProyectoResponse';
 import { EditarProyectoRequest } from '../models/Proyecto/EditarProyecto/EditarProyectoRequest';
 import { EditarProyectoResponse } from '../models/Proyecto/EditarProyecto/EditarProyectoResponse';
+import { ObtenerProyectoPorProfesorResponse } from '../models/Proyecto/ObtenerProyectoPorProfesor/ObtenerProyectoPorProfesorResponse';
+import { VerProyectoRevisionResponse } from '../models/Proyecto/VerProyectoRevision/VerProyectoRevisionResponse';
+import { RechazarProyectoResponse } from '../models/Proyecto/RechazarProyecto/RechazarProyectoResponse';
+import { AprobarProyectoResponse } from '../models/Proyecto/AprobarProyecto/AprobarProyectoResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -26,11 +30,35 @@ export class ProyectoService extends Api {
 
   AgregarProyecto(proyectoRequest: AgregarProyectoRequest): Observable<AgregarProyectoResponse> {
     const uri = `${this.url}Proyecto/agregarProyecto`;
-    return this.http.post<AgregarProyectoResponse>(uri, proyectoRequest, { headers: this._headers });
+    return this.http.post<AgregarProyectoResponse>(uri, proyectoRequest, {
+      headers: this._headers,
+    });
   }
 
   EditarProyecto(proyectoRequest: EditarProyectoRequest): Observable<EditarProyectoResponse> {
     const uri = `${this.url}Proyecto/editarProyecto`;
     return this.http.put<EditarProyectoResponse>(uri, proyectoRequest, { headers: this._headers });
+  }
+
+  ObtenerProyectoPorProfesor(): Observable<Array<ObtenerProyectoPorProfesorResponse>> {
+    const uri = `${this.url}Proyecto/obtenerProyectoPorProfesor`;
+    return this.http.get<Array<ObtenerProyectoPorProfesorResponse>>(uri, {
+      headers: this._headers,
+    });
+  }
+
+  VerProyectoRevision(idProyecto: number): Observable<VerProyectoRevisionResponse> {
+    const uri = `${this.url}Proyecto/verProyectoRevision/${idProyecto}`;
+    return this.http.get<VerProyectoRevisionResponse>(uri, { headers: this._headers });
+  }
+
+  AprobarProyecto(idProyecto: number): Observable<AprobarProyectoResponse> {
+    const uri = `${this.url}Proyecto/aprobarProyecto/${idProyecto}`;
+    return this.http.post<AprobarProyectoResponse>(uri, null, { headers: this._headers });
+  }
+
+  RechazarProyecto(idProyecto: number): Observable<RechazarProyectoResponse> {
+    const uri = `${this.url}Proyecto/rechazarProyecto/${idProyecto}`;
+    return this.http.post<RechazarProyectoResponse>(uri, null, { headers: this._headers });
   }
 }

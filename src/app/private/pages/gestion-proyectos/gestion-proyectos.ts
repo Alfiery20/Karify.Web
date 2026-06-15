@@ -124,11 +124,13 @@ export class GestionProyectos implements OnInit {
   verProyecto(idProyecto: number): void {
     this.proyectoService.VerProyecto(idProyecto).subscribe((proyecto) => {
       this.proyectoSeleccionado = proyecto;
-      this.datosmaestrosService
-        .ObtenerProfesor(proyecto.profesor.toString())
-        .subscribe((profesores) => {
-          this.profesores = profesores;
-        });
+      this.archivoSeleccionado = {
+        name: proyecto.nombreArchivo,
+      } as File;
+      this.seleccionarProfesor({
+        codigo: proyecto.profesor,
+        nombre: proyecto.nombreProfesor,
+      } as ObtenerProfesorResponse);
       this.isModalProyectoOpen = true;
     });
   }
@@ -227,5 +229,16 @@ export class GestionProyectos implements OnInit {
 
   cerrarModalProyecto(): void {
     this.isModalProyectoOpen = false;
+  }
+
+  convertirEstado(estado: string): string {
+    const estados: Record<string, string> = {
+      P: 'Pendiente de Aprobación',
+      A: 'Aprobado',
+      R: 'Rechazado',
+      F: 'Finalizado',
+    };
+
+    return estados[estado] || 'Desconocido';
   }
 }
