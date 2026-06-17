@@ -1,6 +1,5 @@
 <div class="min-h-screen bg-gray-50 px-6 py-8 md:px-10 md:py-10">
   <div class="max-w-7xl mx-auto space-y-6">
-    <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-1">
       <div>
         <h1 class="text-2xl md:text-3xl font-bold text-green-900 tracking-tight">
@@ -12,39 +11,32 @@
       </div>
     </div>
 
-    <!-- Search & Filters -->
     <div class="bg-white border border-gray-200 rounded-xl p-4 md:p-5">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-        <!-- Buscador (ocupa 2 columnas) -->
-        <form class="md:col-span-4 w-full">
+        <form class="md:col-span-4 w-full" (ngSubmit)="buscarProfesor()">
           <label for="search" class="block text-xs font-medium text-gray-600 mb-1.5">
             Buscar profesor
           </label>
-          <div class="relative flex">
+          <div class="relative">
             <span
               class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
             >
               <i class="bi bi-search text-sm"></i>
             </span>
-
             <input
               id="search"
               name="search"
               type="text"
               [(ngModel)]="searchProfesor"
               placeholder="Nombre, apellido o correo..."
-              class="h-10 w-full pl-9 pr-3 text-sm rounded-l-lg border border-gray-300 bg-white text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-700 focus:border-green-700 focus:outline-none transition"
+              class="h-10 w-full pl-9 pr-3 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-700 focus:border-green-700 focus:outline-none transition"
               aria-label="Buscar profesor"
             />
           </div>
         </form>
 
-        <!-- Facultad -->
         <div class="md:col-span-3">
-          <label
-            for="facultad"
-            class="md:col-span-4 block text-xs font-medium text-gray-600 mb-1.5"
-          >
+          <label for="facultad" class="block text-xs font-medium text-gray-600 mb-1.5">
             Facultad
           </label>
           <select
@@ -59,7 +51,6 @@
           </select>
         </div>
 
-        <!-- Escuela -->
         <div class="md:col-span-3">
           <label for="escuela" class="block text-xs font-medium text-gray-600 mb-1.5">
             Escuela
@@ -76,11 +67,10 @@
           </select>
         </div>
 
-        <!-- Botón de búsqueda (alineado a la derecha del input) -->
         <div class="md:col-span-2">
           <button
             (click)="buscarProfesor()"
-            class="h-10 px-4 ml-2 text-sm font-medium text-white rounded-lg shadow-sm transition hover:opacity-90"
+            class="h-10 w-full px-4 text-sm font-medium text-white rounded-lg shadow-sm transition hover:opacity-90 active:scale-95"
             style="background-color: #006400"
             aria-label="Ejecutar búsqueda"
           >
@@ -88,7 +78,6 @@
           </button>
         </div>
 
-        <!-- Botón Nuevo Profesor -->
         <div class="md:col-span-12 flex justify-end">
           <button
             (click)="abrirModalProfesor()"
@@ -102,56 +91,81 @@
       </div>
     </div>
 
-    <!-- Tabla -->
     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-      <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
-        <table class="min-w-full text-sm">
+      <div class="overflow-auto max-h-[500px]">
+        <table class="w-full text-sm table-fixed min-w-[1300px]">
           <thead class="text-white sticky top-0 z-10" style="background-color: #006400">
             <tr>
-              <th class="px-5 py-3 text-center font-medium tracking-wide">ID</th>
-              <th class="px-5 py-3 text-left font-medium tracking-wide">Nombre completo</th>
-              <th class="px-5 py-3 text-left font-medium tracking-wide">Codigo Universitario</th>
-              <th class="px-5 py-3 text-left font-medium tracking-wide">Tipo Documento</th>
-              <th class="px-5 py-3 text-left font-medium tracking-wide">Número Documento</th>
-              <th class="px-5 py-3 text-left font-medium tracking-wide">Correo</th>
-              <th class="px-5 py-3 text-left font-medium tracking-wide">Teléfono</th>
-              <th class="px-5 py-3 text-center font-medium tracking-wide">Facultad</th>
-              <th class="px-5 py-3 text-center font-medium tracking-wide">Escuela</th>
-              <th class="px-5 py-3 text-center font-medium tracking-wide">Rol</th>
-              <th class="px-5 py-3 text-center font-medium tracking-wide">Perfil Completo</th>
-              <th class="px-5 py-3 text-center font-medium tracking-wide">Estado</th>
-              <th class="px-5 py-3 text-center font-medium tracking-wide">Acciones</th>
+              <th class="px-5 py-3 text-center font-medium tracking-wide w-16">ID</th>
+              <th class="px-5 py-3 text-left font-medium tracking-wide w-44">Nombre completo</th>
+              <th class="px-5 py-3 text-left font-medium tracking-wide w-32">Cód. Universitario</th>
+              <th class="px-5 py-3 text-left font-medium tracking-wide w-24">Tipo Doc.</th>
+              <th class="px-5 py-3 text-left font-medium tracking-wide w-28">Núm. Documento</th>
+              <th class="px-5 py-3 text-left font-medium tracking-wide w-52">Correo</th>
+              <th class="px-5 py-3 text-left font-medium tracking-wide w-28">Teléfono</th>
+              <th class="px-5 py-3 text-left font-medium tracking-wide w-56">Facultad</th>
+              <th class="px-5 py-3 text-left font-medium tracking-wide w-48">Escuela</th>
+              <th class="px-5 py-3 text-center font-medium tracking-wide w-24">Rol</th>
+              <th class="px-5 py-3 text-center font-medium tracking-wide w-24">Perfil Completo</th>
+              <th class="px-5 py-3 text-center font-medium tracking-wide w-24">Estado</th>
+              <th class="px-5 py-3 text-center font-medium tracking-wide w-32">Acciones</th>
             </tr>
           </thead>
+
           <tbody class="divide-y divide-gray-100 bg-white">
             <tr
               *ngFor="let profesor of profesoresPaginados"
               class="hover:bg-gray-50 transition-colors"
             >
-              <td class="px-5 py-3.5 text-center text-gray-500 text-xs font-mono">
+              <td class="px-5 py-3.5 text-center text-gray-500 text-xs font-mono w-16 align-middle">
                 #{{ profesor.idProfesor }}
               </td>
-              <td class="px-5 py-3.5 font-medium text-gray-500">
+              <td class="px-5 py-3.5 font-medium text-gray-700 w-44 truncate align-middle">
                 {{ profesor.nombre }} {{ profesor.apellidoPaterno }} {{ profesor.apellidoMaterno }}
               </td>
-              <td class="px-5 py-3.5 text-gray-500">{{ profesor.codigoUniversitario }}</td>
-              <td class="px-5 py-3.5 text-gray-500">{{ profesor.tipoDocumento }}</td>
-              <td class="px-5 py-3.5 text-gray-500">{{ profesor.numeroDocumento }}</td>
-              <td class="px-5 py-3.5 text-gray-500">{{ profesor.correo }}</td>
-              <td class="px-5 py-3.5 text-gray-500">{{ profesor.telefono }}</td>
-              <td class="px-5 py-3.5 text-center">
-                <div class="text-sm font-medium text-gray-700">{{ profesor.facultad || '—' }}</div>
+              <td class="px-5 py-3.5 text-gray-500 w-32 truncate align-middle">
+                {{ profesor.codigoUniversitario }}
               </td>
-              <td class="px-5 py-3.5 text-center">
-                <div class="text-xs text-gray-500 mt-0.5">{{ profesor.escuela || '—' }}</div>
+              <td class="px-5 py-3.5 text-gray-500 w-24 align-middle">
+                {{ profesor.tipoDocumento || '—' }}
               </td>
-              <td class="px-5 py-3.5 text-center">
-                <div class="text-xs text-gray-500 mt-0.5">{{ profesor.rol }}</div>
+              <td class="px-5 py-3.5 text-gray-500 w-28 align-middle">
+                {{ profesor.numeroDocumento || '—' }}
               </td>
-              <td class="px-5 py-3.5 text-gray-500">
-                {{ profesor.completarPerfil ? 'No' : 'Sí' }}
+              <td class="px-5 py-3.5 text-gray-500 w-52 truncate align-middle">
+                {{ profesor.correo }}
               </td>
-              <td class="px-5 py-3.5 text-center">
+              <td class="px-5 py-3.5 text-gray-500 w-28 align-middle">
+                {{ profesor.telefono || '—' }}
+              </td>
+              <td
+                class="px-5 py-3.5 text-gray-700 w-56 truncate align-middle"
+                [title]="profesor.facultad"
+              >
+                {{ profesor.facultad || '—' }}
+              </td>
+              <td
+                class="px-5 py-3.5 text-gray-500 text-xs w-48 truncate align-middle"
+                [title]="profesor.escuela"
+              >
+                {{ profesor.escuela || '—' }}
+              </td>
+              <td class="px-5 py-3.5 text-center text-gray-500 text-xs w-24 align-middle">
+                {{ profesor.rol }}
+              </td>
+              <td class="px-5 py-3.5 text-center w-24 align-middle">
+                <span
+                  [ngClass]="
+                    profesor.completarPerfil
+                      ? 'bg-green-50 text-green-700 ring-1 ring-green-200'
+                      : 'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200'
+                  "
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                >
+                  {{ profesor.completarPerfil ? 'Sí' : 'No' }}
+                </span>
+              </td>
+              <td class="px-5 py-3.5 text-center w-24 align-middle">
                 <span
                   [ngClass]="
                     profesor.estado
@@ -163,29 +177,29 @@
                   {{ profesor.estado ? 'Activo' : 'Inactivo' }}
                 </span>
               </td>
-              <td class="px-5 py-3.5">
-                <div class="flex items-center justify-center gap-2">
+              <td class="px-5 py-3.5 w-32 align-middle">
+                <div class="flex items-center justify-center gap-3">
                   <button
                     (click)="verProfesor(profesor.idProfesor)"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-white transition hover:opacity-90 active:scale-95"
+                    class="w-11 h-11 flex items-center justify-center rounded-lg text-white transition hover:opacity-90 hover:scale-105 active:scale-95 shadow-sm cursor-pointer"
                     style="background-color: #006400"
                     title="Editar"
                   >
-                    <i class="bi bi-pencil text-sm"></i>
+                    <i class="bi bi-pencil text-lg"></i>
                   </button>
                   <button
                     (click)="eliminarProfesor(profesor)"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 border border-red-200 transition hover:bg-red-100 active:scale-95"
+                    class="w-11 h-11 flex items-center justify-center rounded-lg bg-red-50 text-red-500 border border-red-200 transition hover:bg-red-100 hover:scale-105 active:scale-95 shadow-sm cursor-pointer"
                     title="Eliminar"
                   >
-                    <i class="bi bi-trash text-sm"></i>
+                    <i class="bi bi-trash text-lg"></i>
                   </button>
                 </div>
               </td>
             </tr>
 
             <tr *ngIf="profesoresPaginados.length === 0">
-              <td colspan="12" class="px-6 py-12 text-center text-gray-400 text-sm">
+              <td colspan="13" class="px-6 py-12 text-center text-gray-400 text-sm">
                 <i class="bi bi-inbox text-3xl block mb-2"></i>
                 No se encontraron profesores.
               </td>
@@ -195,7 +209,6 @@
       </div>
     </div>
 
-    <!-- Paginación -->
     <div class="flex flex-col md:flex-row justify-between items-center gap-3">
       <div class="flex items-center gap-2">
         <button
@@ -224,12 +237,10 @@
   </div>
 </div>
 
-<!-- Modal de Profesor -->
 <div *ngIf="isModalProfesorOpen" class="fixed inset-0 z-50 flex items-center justify-center px-4">
   <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" (click)="cerrarModalProfesor()"></div>
 
   <div class="relative bg-white w-full max-w-lg rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
-    <!-- Modal Header -->
     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
       <h2 class="text-base font-semibold text-gray-800">
         {{ profesorSeleccionado.idProfesor ? 'Editar Profesor' : 'Nuevo Profesor' }}
@@ -242,13 +253,12 @@
       </button>
     </div>
 
-    <!-- Modal Body -->
     <form class="px-6 py-5 space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-xs font-medium text-gray-600 mb-1.5"
-            >Nombre <span class="text-red-400">*</span></label
-          >
+          <label class="block text-xs font-medium text-gray-600 mb-1.5">
+            Nombre <span class="text-red-400">*</span>
+          </label>
           <input
             type="text"
             [(ngModel)]="profesorSeleccionado.nombre"
@@ -260,9 +270,9 @@
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-gray-600 mb-1.5"
-            >Apellido Paterno <span class="text-red-400">*</span></label
-          >
+          <label class="block text-xs font-medium text-gray-600 mb-1.5">
+            Apellido Paterno <span class="text-red-400">*</span>
+          </label>
           <input
             type="text"
             [(ngModel)]="profesorSeleccionado.apellidoPaterno"
@@ -285,9 +295,9 @@
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-gray-600 mb-1.5"
-            >Correo <span class="text-red-400">*</span></label
-          >
+          <label class="block text-xs font-medium text-gray-600 mb-1.5">
+            Correo <span class="text-red-400">*</span>
+          </label>
           <input
             type="email"
             [(ngModel)]="profesorSeleccionado.correo"
@@ -298,11 +308,8 @@
           />
         </div>
 
-        <!-- Facultad -->
         <div class="md:col-span-2">
-          <label for="rol" class="md:col-span-4 block text-xs font-medium text-gray-600 mb-1.5">
-            Rol
-          </label>
+          <label for="rol" class="block text-xs font-medium text-gray-600 mb-1.5">Rol</label>
           <select
             id="rol"
             [(ngModel)]="rolSeleccionado"
@@ -310,14 +317,13 @@
             class="h-10 w-full px-3 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-green-700 focus:border-green-700 focus:outline-none transition"
             aria-label="Seleccionar rol"
           >
-            <option value="0">Todas los roles</option>
+            <option value="0">Todos los roles</option>
             <option value="1">Administrador</option>
             <option value="2">Profesor</option>
           </select>
         </div>
       </div>
 
-      <!-- Modal Footer -->
       <div class="flex justify-end gap-2 pt-2 border-t border-gray-100 mt-2">
         <button
           type="button"
@@ -327,6 +333,7 @@
           Cancelar
         </button>
         <button
+          type="button"
           (click)="guardarProfesor()"
           class="px-4 py-2 text-sm font-semibold text-white rounded-lg transition hover:opacity-90 active:scale-95"
           style="background-color: #006400"

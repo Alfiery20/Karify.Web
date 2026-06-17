@@ -1,16 +1,23 @@
-<div class="form-container">
-  <h2>Actualizar Información</h2>
-  <form [formGroup]="userForm" class="form-grid">
-    <!-- Código Universitario -->
-    <div class="form-group">
-      <label>Código Universitario</label>
-      <input type="text" formControlName="codigoUniversitario" />
+<div class="max-w-3xl mx-auto bg-white shadow-lg rounded-2xl p-8 border border-gray-100">
+  <h2 class="text-2xl font-bold text-blue-800 mb-1">Actualizar Información</h2>
+  <p class="text-gray-500 text-sm mb-8">Verifica y actualiza tus datos personales y académicos.</p>
+
+  <form [formGroup]="userForm" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-gray-700">Código Universitario</label>
+      <input
+        type="text"
+        formControlName="codigoUniversitario"
+        class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition"
+      />
     </div>
 
-    <!-- Tipo Documento -->
-    <div class="form-group">
-      <label>Tipo Documento</label>
-      <select formControlName="tipoDocumento">
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-gray-700">Tipo Documento</label>
+      <select
+        formControlName="tipoDocumento"
+        class="border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition"
+      >
         <option value="">Seleccione...</option>
         <option value="D">DNI</option>
         <option value="C">Carnet de Extranjería</option>
@@ -19,67 +26,95 @@
       </select>
     </div>
 
-    <!-- Número Documento -->
-    <div class="form-group">
-      <label>Número Documento</label>
-      <input type="text" formControlName="numeroDocumento" />
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-gray-700">Número Documento</label>
+      <input
+        type="text"
+        formControlName="numeroDocumento"
+        class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition"
+      />
     </div>
 
-    <!-- Nombre -->
-    <div class="form-group">
-      <label>Nombre</label>
-      <input type="text" formControlName="nombre" />
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-gray-700">Nombre</label>
+      <input
+        type="text"
+        formControlName="nombre"
+        class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition"
+      />
     </div>
 
-    <!-- Apellido Paterno -->
-    <div class="form-group">
-      <label>Apellido Paterno</label>
-      <input type="text" formControlName="apellidoPaterno" />
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-gray-700">Apellido Paterno</label>
+      <input
+        type="text"
+        formControlName="apellidoPaterno"
+        class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition"
+      />
     </div>
 
-    <!-- Apellido Materno -->
-    <div class="form-group">
-      <label>Apellido Materno</label>
-      <input type="text" formControlName="apellidoMaterno" />
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-gray-700">Apellido Materno</label>
+      <input
+        type="text"
+        formControlName="apellidoMaterno"
+        class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition"
+      />
     </div>
 
-    <!-- Correo -->
-    <div class="form-group">
-      <label>Correo</label>
-      <input type="email" formControlName="correo" />
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-gray-700">Correo</label>
+      <input
+        type="email"
+        formControlName="correo"
+        class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition"
+      />
     </div>
 
-    <!-- Teléfono -->
-    <div class="form-group">
-      <label>Teléfono</label>
-      <input type="text" formControlName="telefono" />
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-gray-700">Teléfono</label>
+      <input
+        type="text"
+        formControlName="telefono"
+        class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition"
+      />
     </div>
 
-    <!-- Facultad -->
-    <div class="form-group">
-      <label>Facultad</label>
-      <select formControlName="nombreFacultad" (change)="ObtenerEscuelasPorFacultad($event)">
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-gray-700">Facultad</label>
+      <select
+        formControlName="nombreFacultad"
+        (change)="ObtenerEscuelasPorFacultad($event)"
+        class="border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition"
+      >
         <option value="0">Seleccione...</option>
-        <option *ngFor="let facultad of this.facultades" [value]="facultad.id">
+        <option *ngFor="let facultad of facultades" [value]="facultad.id">
           {{ facultad.nombre }}
         </option>
       </select>
     </div>
 
-    <!-- Escuela -->
-    <div class="form-group">
-      <label>Escuela</label>
-      <select formControlName="nombreEscuela">
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-gray-700">Escuela</label>
+      <select
+        formControlName="nombreEscuela"
+        class="border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition"
+      >
         <option value="0">Seleccione...</option>
-        <option *ngFor="let escuela of this.escuelas" [value]="escuela.id">
+        <option *ngFor="let escuela of escuelas" [value]="escuela.id">
           {{ escuela.nombre }}
         </option>
       </select>
     </div>
 
-    <!-- Botón -->
-    <div class="form-actions">
-      <button (click)="ActualizarInformacion()" class="btn-submit">Guardar cambios</button>
+    <div class="md:col-span-2 flex justify-end pt-4 border-t border-gray-100 mt-2">
+      <button
+        type="button"
+        (click)="ActualizarInformacion()"
+        class="bg-blue-800 hover:bg-blue-900 active:bg-blue-950 text-white font-semibold px-6 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+      >
+        Guardar cambios
+      </button>
     </div>
   </form>
 </div>

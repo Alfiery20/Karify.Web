@@ -1,6 +1,5 @@
 <div class="min-h-screen bg-gray-50 p-6 md:p-10">
   <div class="max-w-7xl mx-auto">
-    <!-- Header -->
     <div class="mb-8 text-center md:text-left">
       <h1 class="text-3xl md:text-4xl font-bold text-green-900 tracking-tight">
         Gestión de Revisiones de Proyectos
@@ -10,47 +9,57 @@
       </p>
     </div>
 
-    <!-- Table -->
-    <div class="bg-white rounded-xl shadow-md overflow-hidden">
-      <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
-        <table class="min-w-full text-sm">
-          <thead class="text-white" style="background-color: #006400">
+    <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+      <div class="overflow-auto max-h-[500px]">
+        <table class="w-full text-sm table-fixed min-w-[820px]">
+          <thead class="text-white sticky top-0 z-10" style="background-color: #006400">
             <tr>
-              <th class="px-6 py-3 text-center">ID</th>
-              <th class="px-6 py-3 text-left">Nombre del Proyecto</th>
-              <th class="px-6 py-3 text-left">Alumno</th>
-              <th class="px-6 py-3 text-center">Fecha de Presentación</th>
-              <th class="px-6 py-3 text-center">Estado</th>
-              <th class="px-6 py-3 text-center">Opciones</th>
+              <th class="px-6 py-3 text-center font-semibold w-20">ID</th>
+              <th class="px-6 py-3 text-left font-semibold">Nombre del Proyecto</th>
+              <th class="px-6 py-3 text-left font-semibold w-48">Alumno</th>
+              <th class="px-6 py-3 text-center font-semibold w-44">Fecha de Presentación</th>
+              <th class="px-6 py-3 text-center font-semibold w-32">Estado</th>
+              <th class="px-6 py-3 text-center font-semibold w-36">Opciones</th>
             </tr>
           </thead>
-          <tbody class="divide-y">
+          <tbody class="divide-y divide-gray-100">
             <tr *ngFor="let revision of revisionesPaginadas" class="hover:bg-gray-50 transition">
-              <td class="px-6 py-4 text-gray-600 text-center">#{{ revision.id }}</td>
-              <td class="px-6 py-4 font-medium text-gray-800">{{ revision.nombre }}</td>
-              <td class="px-6 py-4 text-gray-600">{{ revision.alumno }}</td>
-              <td class="px-6 py-4 text-gray-600 text-center">
+              <td class="px-6 py-4 text-gray-500 text-xs font-mono text-center align-middle">
+                #{{ revision.id }}
+              </td>
+              <td
+                class="px-6 py-4 font-medium text-gray-800 truncate align-middle"
+                [title]="revision.nombre"
+              >
+                {{ revision.nombre }}
+              </td>
+              <td class="px-6 py-4 text-gray-600 truncate align-middle">{{ revision.alumno }}</td>
+              <td class="px-6 py-4 text-gray-500 text-xs text-center align-middle">
                 {{ revision.fechaRegistro | date: 'dd/MM/yyyy hh:mm a' }}
               </td>
-              <td class="px-6 py-4 text-center">
-                <span [ngClass]="obtenerClaseEstado(revision.estado)">
-                  {{ this.convertirEstado(revision.estado) }}
-                  
+              <td class="px-6 py-4 text-center align-middle">
+                <span
+                  [ngClass]="obtenerClaseEstado(revision.estado)"
+                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+                >
+                  {{ convertirEstado(revision.estado) }}
                 </span>
               </td>
-              <td class="px-6 py-4 text-center">
-                <button *ngIf="revision.estado == 'P'"
+              <td class="px-6 py-4 text-center align-middle">
+                <button
+                  *ngIf="revision.estado === 'P'"
                   (click)="verProyectoRevision(revision.id)"
-                  class="px-4 py-2 text-sm text-white rounded-lg shadow-md transition hover:opacity-90"
+                  class="px-4 py-2 text-sm text-white rounded-lg shadow-sm transition hover:opacity-90 active:scale-95"
                   style="background-color: #006400"
                 >
                   Ver Detalles
                 </button>
+                <span *ngIf="revision.estado !== 'P'" class="text-xs text-gray-400">—</span>
               </td>
             </tr>
 
             <tr *ngIf="revisionesPaginadas.length === 0">
-              <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+              <td colspan="6" class="px-6 py-10 text-center text-gray-400">
                 No se encontraron revisiones.
               </td>
             </tr>
@@ -59,20 +68,21 @@
       </div>
     </div>
 
-    <!-- Pagination -->
-    <div class="flex justify-between items-center mt-6">
+    <div class="flex flex-col md:flex-row justify-between items-center mt-6 gap-3">
       <button
         (click)="paginaAnterior()"
         [disabled]="paginaActual === 1"
-        class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 transition"
+        class="w-full md:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
       >
         ← Anterior
       </button>
-      <span class="text-gray-600">Página {{ paginaActual }} de {{ totalPaginas }}</span>
+      <span class="text-gray-600 text-sm font-medium"
+        >Página {{ paginaActual }} de {{ totalPaginas }}</span
+      >
       <button
         (click)="paginaSiguiente()"
         [disabled]="paginaActual === totalPaginas"
-        class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 transition"
+        class="w-full md:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
       >
         Siguiente →
       </button>
@@ -80,15 +90,13 @@
   </div>
 </div>
 
-<!-- Modal -->
-<div *ngIf="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center">
-  <!-- Fondo -->
+<div *ngIf="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center px-4">
   <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" (click)="cerrarModal()"></div>
 
-  <!-- Contenedor -->
-  <div class="relative bg-white w-full max-w-2xl mx-4 rounded-2xl shadow-2xl p-8 animate-fade-in">
-    <!-- Header -->
-    <div class="flex justify-between items-center border-b pb-3 mb-6">
+  <div
+    class="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto animate-fade-in"
+  >
+    <div class="flex justify-between items-center px-8 pt-8 pb-4 border-b border-gray-100">
       <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
         <i class="bi bi-journal-text text-green-700"></i>
         Detalles del Proyecto
@@ -98,70 +106,74 @@
       </button>
     </div>
 
-    <!-- Contenido -->
-    <div class="space-y-4">
-      <p><strong>Nombre del Proyecto:</strong> {{ revisionSeleccionada.nombre }}</p>
-      <p>
-        <strong>Fecha de Registro:</strong>
-        {{ revisionSeleccionada.fechaRegistro | date: 'dd/MM/yyyy hh:mm a' }}
-      </p>
-
-      <!-- Alumno -->
-      <div class="bg-gray-50 border rounded-lg p-4">
-        <h3 class="text-sm font-semibold text-gray-700 mb-2">Alumno</h3>
-        <p class="text-gray-600">
-          {{ revisionSeleccionada.nombreAlumno }} {{ revisionSeleccionada.apellidoPateno }}
-          {{ revisionSeleccionada.apellidoMaterno }}
+    <div class="px-8 py-6 space-y-4">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-1 pb-2">
+        <p class="text-gray-800">
+          <span class="font-semibold">Nombre del Proyecto:</span> {{ revisionSeleccionada.nombre }}
         </p>
-        <p class="text-gray-600 text-sm mt-1">
-          <strong>Código Universitario:</strong> {{ revisionSeleccionada.codigoUniversitario
-          }}<br />
-          <strong>Número de Documento:</strong> {{ revisionSeleccionada.numeroDocumento }}
+        <p class="text-gray-500 text-sm">
+          <span class="font-medium">Registrado:</span>
+          {{ revisionSeleccionada.fechaRegistro | date: 'dd/MM/yyyy hh:mm a' }}
         </p>
       </div>
 
-      <!-- Descripción con scroll -->
-      <div class="bg-gray-50 border rounded-lg p-4">
+      <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Alumno</h3>
+        <p class="text-gray-700 font-medium">
+          {{ revisionSeleccionada.nombreAlumno }} {{ revisionSeleccionada.apellidoPateno }}
+          {{ revisionSeleccionada.apellidoMaterno }}
+        </p>
+        <p class="text-gray-500 text-sm mt-1">
+          <span class="font-medium text-gray-600">Código Universitario:</span>
+          {{ revisionSeleccionada.codigoUniversitario }}
+          <br />
+          <span class="font-medium text-gray-600">Número de Documento:</span>
+          {{ revisionSeleccionada.numeroDocumento }}
+        </p>
+      </div>
+
+      <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
         <h3 class="text-sm font-semibold text-gray-700 mb-2">Descripción</h3>
-        <div
-          class="text-gray-600 leading-relaxed max-h-40 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-green-800 scrollbar-track-gray-200"
-        >
+        <div class="text-gray-600 leading-relaxed text-sm max-h-40 overflow-y-auto pr-2">
           {{ revisionSeleccionada.descripcion }}
         </div>
       </div>
 
-      <!-- Documento -->
-      <div class="bg-gray-50 border rounded-lg p-4">
+      <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
         <h3 class="text-sm font-semibold text-gray-700 mb-2">Documento del Proyecto</h3>
-        <div class="flex items-center justify-between bg-gray-100 rounded-lg px-3 py-2">
-          <div class="flex items-center gap-2">
-            <i class="bi bi-file-earmark-text text-green-800"></i>
-            <span class="text-sm text-gray-700">
+        <div
+          class="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-3 py-2.5"
+        >
+          <div class="flex items-center gap-2 overflow-hidden">
+            <i class="bi bi-file-earmark-text text-green-800 flex-shrink-0"></i>
+            <span class="text-sm text-gray-700 truncate">
               {{ revisionSeleccionada.nombreArchivo }}
             </span>
           </div>
           <button
             type="button"
             (click)="descargarArchivo(revisionSeleccionada)"
-            class="text-green-600 hover:text-green-800"
+            class="text-green-700 hover:text-green-900 flex-shrink-0 ml-2 transition"
+            title="Descargar documento"
           >
-            <i class="bi bi-download"></i>
+            <i class="bi bi-download text-lg"></i>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Botones -->
-    <div class="flex justify-end gap-3 mt-8">
+    <div class="flex justify-end gap-3 px-8 py-6 border-t border-gray-100">
       <button
+        type="button"
         (click)="rechazarProyecto()"
-        class="px-4 py-2 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition"
+        class="px-4 py-2 rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition"
       >
         Rechazar
       </button>
       <button
+        type="button"
         (click)="aprobarProyecto()"
-        class="px-4 py-2 rounded-lg text-white hover:opacity-90 transition"
+        class="px-4 py-2 rounded-lg text-white shadow-sm hover:opacity-90 active:scale-95 transition"
         style="background-color: #006400"
       >
         Aprobar
