@@ -13,6 +13,7 @@ import { ObtenerProyectoPorProfesorResponse } from '../models/Proyecto/ObtenerPr
 import { VerProyectoRevisionResponse } from '../models/Proyecto/VerProyectoRevision/VerProyectoRevisionResponse';
 import { RechazarProyectoResponse } from '../models/Proyecto/RechazarProyecto/RechazarProyectoResponse';
 import { AprobarProyectoResponse } from '../models/Proyecto/AprobarProyecto/AprobarProyectoResponse';
+import { CancelarProyectoResponse } from '../models/Proyecto/CancelarProyecto/CancelarProyectoResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -54,11 +55,21 @@ export class ProyectoService extends Api {
 
   AprobarProyecto(idProyecto: number): Observable<AprobarProyectoResponse> {
     const uri = `${this.url}Proyecto/aprobarProyecto/${idProyecto}`;
-    return this.http.post<AprobarProyectoResponse>(uri, null, { headers: this._headers });
+    return this.http.post<AprobarProyectoResponse>(uri, { headers: this._headers });
   }
 
   RechazarProyecto(idProyecto: number): Observable<RechazarProyectoResponse> {
     const uri = `${this.url}Proyecto/rechazarProyecto/${idProyecto}`;
-    return this.http.post<RechazarProyectoResponse>(uri, null, { headers: this._headers });
+    return this.http.delete<RechazarProyectoResponse>(uri, { headers: this._headers });
+  }
+
+  CancelarProyecto(idProyecto: number): Observable<CancelarProyectoResponse> {
+    const uri = `${this.url}Proyecto/cancelarProyecto/${idProyecto}`;
+    return this.http.delete<CancelarProyectoResponse>(uri, { headers: this._headers });
+  }
+
+  DescargarConstancia(idProyecto: number): Observable<Blob> {
+    const uri = `${this.url}Proyecto/descargarConstancia/${idProyecto}`;
+    return this.http.get(uri, { headers: this._headers, responseType: 'blob' });
   }
 }

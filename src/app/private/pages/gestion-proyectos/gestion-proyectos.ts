@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, OnInit } from '@angular/core';
-import { ObtenerRolResponse } from '../../../core/models/Rol/ObtenerRol/ObtenerRolResponse';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ObtenerProyectoRequest } from '../../../core/models/Proyecto/ObtenerProyecto/ObtenerProyectoRequest';
 import { ObtenerProyectoResponse } from '../../../core/models/Proyecto/ObtenerProyecto/ObtenerProyectoResponse';
@@ -11,6 +10,7 @@ import { ObtenerProfesorResponse } from '../../../core/models/DatosMaestros/Obte
 import { AgregarProyectoRequest } from '../../../core/models/Proyecto/AgregarProyecto/AgregarProyectoRequest';
 import { AlertaServices } from '../../../core/services/alerta-services';
 import { EditarProyectoRequest } from '../../../core/models/Proyecto/EditarProyecto/EditarProyectoRequest';
+import { Constantes } from '../../../core/Utils/Constants';
 
 @Component({
   selector: 'app-gestion-proyectos',
@@ -135,12 +135,24 @@ export class GestionProyectos implements OnInit {
     });
   }
 
-  revisarProyecto(proyecto: ObtenerProyectoResponse): void {
-    alert(`Revisando proyecto: ${proyecto.nombre}`);
+  cancelarProyecto(idProyecto: number): void {
+    this.alertService.confirm('¿Está seguro de cancelar el proyecto?', () => {
+      this.proyectoService.CancelarProyecto(idProyecto).subscribe((response) => {
+        if (response.mensaje === 'OK') {
+          this.alertService.success('Proyecto cancelado exitosamente');
+        } else {
+          this.alertService.error('Error al cancelar el proyecto');
+        }
+      });
+      this.cargarProyectos();
+    });
   }
 
   guardarProyecto(): void {
-    if (this.proyectoSeleccionado) {
+    if (
+      this.proyectoSeleccionado.idProyecto == 0 ||
+      this.proyectoSeleccionado.idProyecto == undefined
+    ) {
       this.agregarProyecto();
     } else {
       this.editarProyecto();
@@ -232,13 +244,19 @@ export class GestionProyectos implements OnInit {
   }
 
   convertirEstado(estado: string): string {
-    const estados: Record<string, string> = {
-      P: 'Pendiente de Aprobación',
-      A: 'Aprobado',
-      R: 'Rechazado',
-      F: 'Finalizado',
-    };
+    return Constantes.getEstadoProyecto(estado);
+  }
 
-    return estados[estado] || 'Desconocido';
+  descargarConstancia(idProyecto: number): void {
+    this.proyectoService.DescargarConstancia(idProyecto).subscribe((blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ConstanciaAutenticidad.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    });
   }
 }

@@ -4,6 +4,7 @@ import { ObtenerProyectoPorProfesorResponse } from '../../../core/models/Proyect
 import { ProyectoService } from '../../../core/services/proyecto-service';
 import { VerProyectoRevisionResponse } from '../../../core/models/Proyecto/VerProyectoRevision/VerProyectoRevisionResponse';
 import { AlertaServices } from '../../../core/services/alerta-services';
+import { Constantes } from '../../../core/Utils/Constants';
 
 @Component({
   selector: 'app-revision-proyecto',
@@ -96,14 +97,7 @@ export class RevisionProyecto {
   }
 
   convertirEstado(estado: string): string {
-    const estados: Record<string, string> = {
-      P: 'Pendiente de Aprobación',
-      A: 'Aprobado',
-      R: 'Rechazado',
-      F: 'Finalizado',
-    };
-
-    return estados[estado] || 'Desconocido';
+    return Constantes.getEstadoProyecto(estado);
   }
 
   obtenerClaseEstado(estado: string): string {

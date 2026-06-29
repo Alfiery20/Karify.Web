@@ -3,6 +3,7 @@ export interface VerProyectoResponse {
   nombre: string;
   descripcion: string;
   profesor: number;
+  estado: string;
   nombreProfesor: string;
   nombreArchivo: string;
   fechaRegistro: Date;
