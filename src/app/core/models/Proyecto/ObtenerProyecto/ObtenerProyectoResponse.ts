@@ -5,4 +5,5 @@ export interface ObtenerProyectoResponse {
   profesor: string;
   fechaRegistro: string;
   estado: string;
+  esCotesista: boolean;
 }

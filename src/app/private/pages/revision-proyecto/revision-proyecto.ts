@@ -101,14 +101,7 @@ export class RevisionProyecto {
   }
 
   obtenerClaseEstado(estado: string): string {
-    const clases: Record<string, string> = {
-      P: 'bg-amber-100 text-amber-800',
-      A: 'bg-green-100 text-green-800',
-      R: 'bg-red-100 text-red-800',
-      F: 'bg-blue-100 text-blue-800',
-    };
-
-    return clases[estado] || 'bg-gray-100 text-gray-800';
+    return Constantes.getClaseEstado(estado);
   }
 
   descargarArchivo(proyecto: VerProyectoRevisionResponse): void {

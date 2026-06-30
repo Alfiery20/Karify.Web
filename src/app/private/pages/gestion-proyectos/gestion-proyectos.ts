@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, LOCALE_ID, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ObtenerProyectoRequest } from '../../../core/models/Proyecto/ObtenerProyecto/ObtenerProyectoRequest';
 import { ObtenerProyectoResponse } from '../../../core/models/Proyecto/ObtenerProyecto/ObtenerProyectoResponse';
@@ -11,6 +11,8 @@ import { AgregarProyectoRequest } from '../../../core/models/Proyecto/AgregarPro
 import { AlertaServices } from '../../../core/services/alerta-services';
 import { EditarProyectoRequest } from '../../../core/models/Proyecto/EditarProyecto/EditarProyectoRequest';
 import { Constantes } from '../../../core/Utils/Constants';
+import { ObtenerAlumnoResponse } from '../../../core/models/DatosMaestros/ObtenerAlumno/ObtenerAlumnoResponse';
+import { VerProyectoRevisionResponse } from '../../../core/models/Proyecto/VerProyectoRevision/VerProyectoRevisionResponse';
 
 @Component({
   selector: 'app-gestion-proyectos',
@@ -25,12 +27,19 @@ export class GestionProyectos implements OnInit {
   proyectoSeleccionado: VerProyectoResponse = {} as VerProyectoResponse;
 
   profesorSeleccionado: ObtenerProfesorResponse = {} as ObtenerProfesorResponse;
+  alumnoSeleccionado: ObtenerAlumnoResponse = {} as ObtenerAlumnoResponse;
+
+  revisionSeleccionada: VerProyectoRevisionResponse = {} as VerProyectoRevisionResponse;
 
   searchProyecto: string = '';
   searchProfesor: string = '';
+  searchAlumno: string = '';
+
   isModalProyectoOpen: boolean = false;
+  isModalOpen: boolean = false;
 
   profesores: ObtenerProfesorResponse[] = [];
+  alumnos: ObtenerAlumnoResponse[] = [];
 
   paginaActual: number = 1;
   elementosPorPagina: number = 5;
@@ -56,6 +65,12 @@ export class GestionProyectos implements OnInit {
   cargarProfesores(): void {
     this.datosmaestrosService.ObtenerProfesor(this.searchProfesor).subscribe((profesores) => {
       this.profesores = profesores;
+    });
+  }
+
+  cargarAlumno(): void {
+    this.datosmaestrosService.ObtenerAlumno(this.searchAlumno).subscribe((alumnos) => {
+      this.alumnos = alumnos;
     });
   }
 
@@ -97,10 +112,23 @@ export class GestionProyectos implements OnInit {
     }, 300);
   }
 
+  onAlumnoInput(): void {
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(() => {
+      this.cargarAlumno();
+    }, 300);
+  }
+
   seleccionarProfesor(profesor: ObtenerProfesorResponse): void {
     this.searchProfesor = profesor.nombre;
     this.profesorSeleccionado = profesor;
     this.profesores = [];
+  }
+
+  seleccionarAlumno(alumno: ObtenerAlumnoResponse): void {
+    this.searchAlumno = alumno.nombre;
+    this.alumnoSeleccionado = alumno;
+    this.alumnos = [];
   }
 
   buscarProyecto(): void {
@@ -118,18 +146,31 @@ export class GestionProyectos implements OnInit {
 
   abrirModalProyecto(): void {
     this.proyectoSeleccionado = {} as VerProyectoResponse;
+    this.profesorSeleccionado = {} as ObtenerProfesorResponse;
+    this.alumnoSeleccionado = {} as ObtenerAlumnoResponse;
+
+    this.searchAlumno = '';
+    this.searchProfesor = '';
+    this.archivoSeleccionado = null;
+
     this.isModalProyectoOpen = true;
   }
 
   verProyecto(idProyecto: number): void {
     this.proyectoService.VerProyecto(idProyecto).subscribe((proyecto) => {
       this.proyectoSeleccionado = proyecto;
+
       this.archivoSeleccionado = {
         name: proyecto.nombreArchivo,
       } as File;
       this.seleccionarProfesor({
         codigo: proyecto.profesor,
         nombre: proyecto.nombreProfesor,
+      } as ObtenerProfesorResponse);
+
+      this.seleccionarAlumno({
+        codigo: proyecto.cotesista,
+        nombre: proyecto.nombreCotesista,
       } as ObtenerProfesorResponse);
       this.isModalProyectoOpen = true;
     });
@@ -140,11 +181,11 @@ export class GestionProyectos implements OnInit {
       this.proyectoService.CancelarProyecto(idProyecto).subscribe((response) => {
         if (response.mensaje === 'OK') {
           this.alertService.success('Proyecto cancelado exitosamente');
+          this.cargarProyectos();
         } else {
           this.alertService.error('Error al cancelar el proyecto');
         }
       });
-      this.cargarProyectos();
     });
   }
 
@@ -163,6 +204,8 @@ export class GestionProyectos implements OnInit {
     var request: AgregarProyectoRequest = {
       nombre: this.proyectoSeleccionado.nombre || '',
       descripcion: this.proyectoSeleccionado.descripcion || '',
+      nombreCotesista: this.searchAlumno,
+      idCotesista: this.alumnoSeleccionado.codigo || 0,
       nombreArchivo: this.archivoSeleccionado?.name || '',
       archivoEncriptado: this.archivoBase64 || '',
       peso: this.archivoSeleccionado?.size || 0,
@@ -175,6 +218,10 @@ export class GestionProyectos implements OnInit {
         this.cerrarModalProyecto();
         this.cargarProyectos();
         this.eliminarArchivo();
+      } else if (response.mensaje === 'E1') {
+        this.alertService.error(
+          'El Alumno cotesista, no puede ser el mismo que el que esta registrando el proyecto',
+        );
       } else {
         this.alertService.error('Error al agregar el proyecto');
       }
@@ -185,6 +232,7 @@ export class GestionProyectos implements OnInit {
     var request: EditarProyectoRequest = {
       idProyecto: this.proyectoSeleccionado.idProyecto,
       nombre: this.proyectoSeleccionado.nombre || '',
+      idCotesista: this.alumnoSeleccionado.codigo || 0,
       descripcion: this.proyectoSeleccionado.descripcion || '',
       idProfesor: this.profesorSeleccionado.codigo || 0,
     };
@@ -239,8 +287,18 @@ export class GestionProyectos implements OnInit {
     this.archivoBase64 = null;
   }
 
+  eliminarAlumno(): void {
+    this.searchAlumno = '';
+    this.alumnos = [];
+    this.alumnoSeleccionado = {} as ObtenerAlumnoResponse;
+  }
+
   cerrarModalProyecto(): void {
     this.isModalProyectoOpen = false;
+  }
+
+  obtenerClaseEstado(estado: string): string {
+    return Constantes.getClaseEstado(estado);
   }
 
   convertirEstado(estado: string): string {
@@ -258,5 +316,78 @@ export class GestionProyectos implements OnInit {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     });
+  }
+
+  verProyectoRevision(idProyecto: number): void {
+    this.proyectoService.VerProyectoRevision(idProyecto).subscribe((response) => {
+      this.revisionSeleccionada = {
+        idProyecto: response.idProyecto,
+        nombre: response.nombre,
+        descripcion: response.descripcion,
+        fechaRegistro: response.fechaRegistro,
+        nombreArchivo: response.nombreArchivo,
+        archivo: response.archivo,
+        numeroDocumento: response.numeroDocumento,
+        codigoUniversitario: response.codigoUniversitario,
+        nombreAlumno: response.nombreAlumno,
+        apellidoPateno: response.apellidoPateno,
+        apellidoMaterno: response.apellidoMaterno,
+      };
+      this.abrirModalRevision(this.revisionSeleccionada);
+    });
+  }
+
+  abrirModalRevision(revision: VerProyectoRevisionResponse): void {
+    this.revisionSeleccionada = { ...revision };
+    this.isModalOpen = true;
+  }
+
+  cerrarModal(): void {
+    this.isModalOpen = false;
+    this.revisionSeleccionada = {} as VerProyectoRevisionResponse;
+  }
+
+  aprobarProyecto(): void {
+    this.proyectoService
+      .AprobarProyectoCotesista(this.revisionSeleccionada.idProyecto)
+      .subscribe((response) => {
+        if (response.mensaje == 'OK') {
+          this.alertService.success('Proyecto aprobado exitosamente');
+        } else if (response.mensaje == 'E1') {
+          this.alertService.error(
+            'El proyecto no esta asignado al profesor logeado. No puedes aprobarlo.',
+          );
+        } else {
+          this.alertService.error('Error al aprobar el proyecto');
+        }
+        this.cerrarModal();
+        this.cargarProyectos();
+      });
+  }
+
+  rechazarProyecto(): void {
+    this.proyectoService
+      .RechazarProyectoCotesista(this.revisionSeleccionada.idProyecto)
+      .subscribe((response) => {
+        if (response.mensaje == 'OK') {
+          this.alertService.success('Proyecto rechazado exitosamente');
+        } else if (response.mensaje == 'E1') {
+          this.alertService.error(
+            'El proyecto no esta asignado al profesor logeado. No puedes aprobarlo.',
+          );
+        } else {
+          this.alertService.error('Error al rechazar el proyecto');
+        }
+        this.cerrarModal();
+        this.cargarProyectos();
+      });
+  }
+
+  esEditable(proyecto?: ObtenerProyectoResponse): boolean {
+    if (proyecto) {
+      return (proyecto.estado === 'T' || proyecto.estado === 'P') && proyecto.esCotesista;
+    }
+
+    return Object.keys(this.proyectoSeleccionado).length === 0;
   }
 }

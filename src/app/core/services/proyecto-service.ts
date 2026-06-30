@@ -14,6 +14,8 @@ import { VerProyectoRevisionResponse } from '../models/Proyecto/VerProyectoRevis
 import { RechazarProyectoResponse } from '../models/Proyecto/RechazarProyecto/RechazarProyectoResponse';
 import { AprobarProyectoResponse } from '../models/Proyecto/AprobarProyecto/AprobarProyectoResponse';
 import { CancelarProyectoResponse } from '../models/Proyecto/CancelarProyecto/CancelarProyectoResponse';
+import { AprobarProyectoCotesistaResponse } from '../models/Proyecto/AprobarProyectoCotesista/AprobarProyectoCotesistaResponse';
+import { RechazarProyectoCotesistaResponse } from '../models/Proyecto/RechazarProyectoCotesista/RechazarProyectoCotesistaResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -55,7 +57,7 @@ export class ProyectoService extends Api {
 
   AprobarProyecto(idProyecto: number): Observable<AprobarProyectoResponse> {
     const uri = `${this.url}Proyecto/aprobarProyecto/${idProyecto}`;
-    return this.http.post<AprobarProyectoResponse>(uri, { headers: this._headers });
+    return this.http.post<AprobarProyectoResponse>(uri, {}, { headers: this._headers });
   }
 
   RechazarProyecto(idProyecto: number): Observable<RechazarProyectoResponse> {
@@ -71,5 +73,15 @@ export class ProyectoService extends Api {
   DescargarConstancia(idProyecto: number): Observable<Blob> {
     const uri = `${this.url}Proyecto/descargarConstancia/${idProyecto}`;
     return this.http.get(uri, { headers: this._headers, responseType: 'blob' });
+  }
+
+  AprobarProyectoCotesista(idProyecto: number): Observable<AprobarProyectoCotesistaResponse> {
+    const uri = `${this.url}Proyecto/AprobarProyectoCotesista/${idProyecto}`;    
+    return this.http.post<AprobarProyectoCotesistaResponse>(uri, {}, { headers: this._headers });
+  }
+
+  RechazarProyectoCotesista(idProyecto: number): Observable<RechazarProyectoCotesistaResponse> {
+    const uri = `${this.url}Proyecto/RechazarProyectoCotesista/${idProyecto}`;
+    return this.http.delete<RechazarProyectoCotesistaResponse>(uri, { headers: this._headers });
   }
 }

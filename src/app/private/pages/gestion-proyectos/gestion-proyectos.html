@@ -22,7 +22,7 @@
         />
         <button
           (click)="buscarProyecto()"
-          class="px-5 py-2 text-white font-medium rounded-r-lg shadow-sm transition hover:opacity-90"
+          class="px-5 py-2 text-white font-medium rounded-r-lg shadow-sm transition hover:opacity-90 cursor-pointer"
           style="background-color: #006400"
         >
           Buscar
@@ -31,7 +31,7 @@
 
       <button
         (click)="abrirModalProyecto()"
-        class="w-full md:w-auto px-6 py-2.5 text-white font-medium rounded-lg shadow-md transition flex items-center justify-center gap-2 hover:opacity-90 hover:shadow-lg"
+        class="cursor-pointer w-full md:w-auto px-6 py-2.5 text-white font-medium rounded-lg shadow-md transition flex items-center justify-center gap-2 hover:opacity-90 hover:shadow-lg"
         style="background-color: #006400"
       >
         <i class="bi bi-plus-lg text-lg"></i> Nuevo Proyecto
@@ -69,13 +69,7 @@
               <td class="px-6 py-4 text-center align-middle">
                 <span
                   class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ring-1 ring-inset"
-                  [ngClass]="
-                    proyecto.estado === 'P'
-                      ? 'bg-yellow-50 text-yellow-700 ring-yellow-600/20'
-                      : proyecto.estado === 'A'
-                        ? 'bg-green-50 text-green-700 ring-green-600/20'
-                        : 'bg-gray-100 text-gray-600 ring-gray-400/20'
-                  "
+                  [ngClass]="obtenerClaseEstado(proyecto.estado)"
                 >
                   {{ convertirEstado(proyecto.estado) }}
                 </span>
@@ -85,31 +79,36 @@
                   <button
                     (click)="verProyecto(proyecto.id)"
                     title="Editar proyecto"
-                    class="w-10 h-10 flex items-center justify-center rounded-full text-white shadow-md transition transform hover:scale-110 hover:shadow-lg"
+                    class="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full text-white shadow-md transition transform hover:scale-110 hover:shadow-lg"
                     style="background-color: #006400"
                   >
-                    <i *ngIf="proyecto.estado === 'P'; else ver" class="bi bi-pencil text-base">
-                    </i>
-
-                    <ng-template #ver>
-                      <i class="bi bi-eye text-base"></i>
-                    </ng-template>
+                    <i class="bi bi-pencil-square text-base"></i>
                   </button>
                   <button
-                    *ngIf="proyecto.estado === 'P'"
+                    *ngIf="
+                      (proyecto.estado === 'P' || proyecto.estado === 'T') && !proyecto.esCotesista
+                    "
                     (click)="cancelarProyecto(proyecto.id)"
-                    title="Revisar proyecto"
-                    class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 shadow-md transition transform hover:scale-110 hover:bg-blue-200 hover:shadow-lg"
+                    title="Cancelar proyecto"
+                    class="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full bg-red-100 text-red-700 shadow-md transition transform hover:scale-110 hover:bg-red-200 hover:shadow-lg"
                   >
-                    <i class="bi bi-eye text-base"></i>
+                    <i class="bi bi-x-circle-fill text-base"></i>
                   </button>
                   <button
                     *ngIf="proyecto.estado === 'F'"
                     (click)="descargarConstancia(proyecto.id)"
                     title="Revisar proyecto"
-                    class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 shadow-md transition transform hover:scale-110 hover:bg-blue-200 hover:shadow-lg"
+                    class="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 shadow-md transition transform hover:scale-110 hover:bg-blue-200 hover:shadow-lg"
                   >
                     <i class="bi bi-download text-base"></i>
+                  </button>
+                  <button
+                    *ngIf="proyecto.esCotesista && proyecto.estado === 'T'"
+                    (click)="verProyectoRevision(proyecto.id)"
+                    title="Aceptar ser cotesista"
+                    class="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full bg-green-100 text-green-700 shadow-md transition transform hover:scale-110 hover:bg-green-200 hover:shadow-lg"
+                  >
+                    <i class="bi bi-check-circle-fill text-base"></i>
                   </button>
                 </div>
               </td>
@@ -206,6 +205,44 @@
         </ul>
       </div>
 
+      <div class="flex flex-col gap-1 relative">
+        <label class="text-sm font-medium text-gray-700"> Alumno Cotesista </label>
+
+        <div class="flex gap-2">
+          <input
+            type="text"
+            [disabled]="!esEditable()"
+            [(ngModel)]="searchAlumno"
+            (input)="onAlumnoInput()"
+            placeholder="Buscar y seleccionar alumno..."
+            class="flex-1 h-11 px-4 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-800 focus:border-green-800 focus:outline-none transition"
+          />
+
+          <button
+            *ngIf="searchAlumno && esEditable()"
+            type="button"
+            (click)="eliminarAlumno()"
+            title="Eliminar alumno"
+            class="w-11 h-11 flex items-center justify-center rounded-lg bg-red-100 text-red-700 shadow-sm transition hover:bg-red-200 hover:scale-105"
+          >
+            <i class="bi bi-trash-fill text-base"></i>
+          </button>
+        </div>
+
+        <ul
+          *ngIf="alumnos.length > 0"
+          class="absolute top-full left-0 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto z-10"
+        >
+          <li
+            *ngFor="let alumno of alumnos"
+            (click)="seleccionarAlumno(alumno)"
+            class="px-4 py-2 text-sm text-gray-700 hover:bg-green-50 cursor-pointer transition"
+          >
+            {{ alumno.nombre }}
+          </li>
+        </ul>
+      </div>
+
       <div>
         <label class="block text-sm text-gray-600 mb-1">Documento del proyecto</label>
 
@@ -244,6 +281,7 @@
               </div>
 
               <button
+                *ngIf="esEditable()"
                 type="button"
                 (click)="eliminarArchivo()"
                 class="text-red-500 hover:text-red-700 flex-shrink-0 ml-2"
@@ -265,13 +303,107 @@
         Cancelar
       </button>
       <button
-        *ngIf="this.proyectoSeleccionado.estado === 'P'"
+        *ngIf="
+          ((this.proyectoSeleccionado.estado === 'T' || this.proyectoSeleccionado.estado === 'P') &&
+          this.proyectoSeleccionado.esCotesista) || this.proyectoSeleccionado.idProyecto == undefined
+        "
         type="button"
         (click)="guardarProyecto()"
         class="px-4 py-2 text-white rounded-lg shadow-sm transition hover:opacity-90"
         style="background-color: #006400"
       >
         Guardar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center px-4">
+  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" (click)="cerrarModal()"></div>
+
+  <div
+    class="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto animate-fade-in"
+  >
+    <div class="flex justify-between items-center px-8 pt-8 pb-4 border-b border-gray-100">
+      <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+        <i class="bi bi-journal-text text-green-700"></i>
+        Detalles del Proyecto
+      </h2>
+      <button (click)="cerrarModal()" class="text-gray-400 hover:text-gray-600 transition">
+        <i class="bi bi-x-lg text-xl"></i>
+      </button>
+    </div>
+
+    <div class="px-8 py-6 space-y-4">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-1 pb-2">
+        <p class="text-gray-800">
+          <span class="font-semibold">Nombre del Proyecto:</span> {{ revisionSeleccionada.nombre }}
+        </p>
+        <p class="text-gray-500 text-sm">
+          <span class="font-medium">Registrado:</span>
+          {{ revisionSeleccionada.fechaRegistro | date: 'dd/MM/yyyy hh:mm a' }}
+        </p>
+      </div>
+
+      <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Alumno</h3>
+        <p class="text-gray-700 font-medium">
+          {{ revisionSeleccionada.nombreAlumno }} {{ revisionSeleccionada.apellidoPateno }}
+          {{ revisionSeleccionada.apellidoMaterno }}
+        </p>
+        <p class="text-gray-500 text-sm mt-1">
+          <span class="font-medium text-gray-600">Código Universitario:</span>
+          {{ revisionSeleccionada.codigoUniversitario }}
+          <br />
+          <span class="font-medium text-gray-600">Número de Documento:</span>
+          {{ revisionSeleccionada.numeroDocumento }}
+        </p>
+      </div>
+
+      <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Descripción</h3>
+        <div class="text-gray-600 leading-relaxed text-sm max-h-40 overflow-y-auto pr-2">
+          {{ revisionSeleccionada.descripcion }}
+        </div>
+      </div>
+
+      <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Documento del Proyecto</h3>
+        <div
+          class="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-3 py-2.5"
+        >
+          <div class="flex items-center gap-2 overflow-hidden">
+            <i class="bi bi-file-earmark-text text-green-800 flex-shrink-0"></i>
+            <span class="text-sm text-gray-700 truncate">
+              {{ revisionSeleccionada.nombreArchivo }}
+            </span>
+          </div>
+          <button
+            type="button"
+            class="text-green-700 hover:text-green-900 flex-shrink-0 ml-2 transition"
+            title="Descargar documento"
+          >
+            <i class="bi bi-download text-lg"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-3 px-8 py-6 border-t border-gray-100">
+      <button
+        type="button"
+        (click)="rechazarProyecto()"
+        class="px-4 py-2 rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition"
+      >
+        Rechazar
+      </button>
+      <button
+        type="button"
+        (click)="aprobarProyecto()"
+        class="px-4 py-2 rounded-lg text-white shadow-sm hover:opacity-90 active:scale-95 transition"
+        style="background-color: #006400"
+      >
+        Aprobar
       </button>
     </div>
   </div>

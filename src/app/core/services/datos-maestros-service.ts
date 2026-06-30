@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ObtenerFacultadResponse } from '../models/DatosMaestros/ObtenerFacultad/ObtenerFacultadResponse';
 import { ObtenerEscuelaResponse } from '../models/DatosMaestros/ObtenerEscuela/ObtenerEscuelaResponse';
 import { ObtenerProfesorResponse } from '../models/DatosMaestros/ObtenerProfesor/ObtenerProfesorResponse';
+import { ObtenerAlumnoResponse } from '../models/DatosMaestros/ObtenerAlumno/ObtenerAlumnoResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -23,5 +24,10 @@ export class DatosMaestrosService extends Api {
   ObtenerProfesor(nombre: string): Observable<Array<ObtenerProfesorResponse>> {
     const uri = `${this.url}DatosMaestros/obtenerProfesor/${nombre}`;
     return this.http.get<Array<ObtenerProfesorResponse>>(uri, { headers: this._headers });
+  }
+
+  ObtenerAlumno(nombre: string): Observable<Array<ObtenerAlumnoResponse>> {
+    const uri = `${this.url}DatosMaestros/obtenerAlumno/${nombre}`;
+    return this.http.get<Array<ObtenerAlumnoResponse>>(uri, { headers: this._headers });
   }
 }

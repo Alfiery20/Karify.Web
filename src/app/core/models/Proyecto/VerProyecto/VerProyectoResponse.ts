@@ -2,9 +2,12 @@ export interface VerProyectoResponse {
   idProyecto: number;
   nombre: string;
   descripcion: string;
-  profesor: number;
   estado: string;
+  profesor: number;
   nombreProfesor: string;
+  cotesista: number;
+  nombreCotesista: string;
   nombreArchivo: string;
   fechaRegistro: Date;
+  esCotesista: boolean;
 }
