@@ -5,10 +5,11 @@ import { ProyectoService } from '../../../core/services/proyecto-service';
 import { VerProyectoRevisionResponse } from '../../../core/models/Proyecto/VerProyectoRevision/VerProyectoRevisionResponse';
 import { AlertaServices } from '../../../core/services/alerta-services';
 import { Constantes } from '../../../core/Utils/Constants';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-revision-proyecto',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './revision-proyecto.html',
   styleUrl: './revision-proyecto.scss',
 })
@@ -24,11 +25,25 @@ export class RevisionProyecto {
 
   isModalOpen: boolean = false;
 
+  searchProyecto: string = '';
+
   constructor(
     private proyectoService: ProyectoService,
     private alertService: AlertaServices,
   ) {
     this.obtenerProyectoARevisar();
+  }
+  buscarProyecto(): void {
+    if (this.searchProyecto.trim() === '') {
+      this.actualizarPaginacion();
+    } else {
+      const filtrados = this.revisiones.filter((p) =>
+        p.nombre.toLowerCase().includes(this.searchProyecto.toLowerCase()),
+      );
+      this.revisionesPaginadas = filtrados;
+      this.totalPaginas = Math.ceil(filtrados.length / this.elementosPorPagina);
+      this.paginaActual = 1;
+    }
   }
 
   obtenerProyectoARevisar() {
