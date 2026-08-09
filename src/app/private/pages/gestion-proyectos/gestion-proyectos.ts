@@ -382,12 +382,4 @@ export class GestionProyectos implements OnInit {
         this.cargarProyectos();
       });
   }
-
-  esEditable(proyecto?: ObtenerProyectoResponse): boolean {
-    if (proyecto) {
-      return (proyecto.estado === 'T' || proyecto.estado === 'P') && proyecto.esCotesista;
-    }
-
-    return Object.keys(this.proyectoSeleccionado).length === 0;
-  }
 }
