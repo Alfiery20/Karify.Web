@@ -57,6 +57,11 @@ export class InicioSesion {
                 'Usuario no registrado',
                 'El usuario no está registrado en el sistema. Por favor, contacte al administrador.',
               );
+            } else if (!response.estadoRol) {
+              this.alertaServices.error(
+                'Rol/Usuario inactivo',
+                'Su acceso ha sido restringido, contacte al administrador.',
+              );
             } else {
               this.localStorageService.setItem('token', response.token);
               this.localStorageService.setItem('usuario', JSON.stringify(response));

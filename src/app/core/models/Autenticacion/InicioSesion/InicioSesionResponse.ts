@@ -18,5 +18,6 @@ export interface InicioSesionCommandResponse {
     token: string,
     idRol: number,
     rol: string,
+    estadoRol: boolean,
     menus: Menu[]
 }

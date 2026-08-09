@@ -211,7 +211,6 @@
         <div class="flex gap-2">
           <input
             type="text"
-            [disabled]="!esEditable()"
             [(ngModel)]="searchAlumno"
             (input)="onAlumnoInput()"
             placeholder="Buscar y seleccionar alumno..."
@@ -219,7 +218,7 @@
           />
 
           <button
-            *ngIf="searchAlumno && esEditable()"
+            *ngIf="searchAlumno"
             type="button"
             (click)="eliminarAlumno()"
             title="Eliminar alumno"
@@ -281,7 +280,6 @@
               </div>
 
               <button
-                *ngIf="esEditable()"
                 type="button"
                 (click)="eliminarArchivo()"
                 class="text-red-500 hover:text-red-700 flex-shrink-0 ml-2"
@@ -303,11 +301,6 @@
         Cancelar
       </button>
       <button
-        *ngIf="
-          ((this.proyectoSeleccionado.estado === 'T' || this.proyectoSeleccionado.estado === 'P') &&
-          this.proyectoSeleccionado.esCotesista) || this.proyectoSeleccionado.idProyecto == undefined
-        "
-        type="button"
         (click)="guardarProyecto()"
         class="px-4 py-2 text-white rounded-lg shadow-sm transition hover:opacity-90"
         style="background-color: #006400"
