@@ -111,7 +111,8 @@
       <button
         type="button"
         (click)="ActualizarInformacion()"
-        class="bg-blue-800 hover:bg-blue-900 active:bg-blue-950 text-white font-semibold px-6 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+        [disabled]="!validarFormulario()"
+        class="bg-blue-800 enabled:cursor-pointer enabled:hover:bg-blue-900 enabled:active:bg-blue-950 text-white font-semibold px-6 py-2.5 rounded-lg shadow-md enabled:hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Guardar cambios
       </button>

@@ -48,7 +48,7 @@
               <th class="px-6 py-3 text-left font-semibold w-40">Profesor</th>
               <th class="px-6 py-3 text-center font-semibold w-44">Fecha de Registro</th>
               <th class="px-6 py-3 text-center font-semibold w-32">Estado</th>
-              <th class="px-6 py-3 text-center font-semibold w-32">Acciones</th>
+              <th class="w-48 px-3 py-3 text-center font-semibold">Acciones</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
@@ -74,42 +74,52 @@
                   {{ convertirEstado(proyecto.estado) }}
                 </span>
               </td>
-              <td class="px-6 py-4 align-middle">
-                <div class="flex items-center justify-center gap-3">
-                  <button
-                    (click)="verProyecto(proyecto.id)"
-                    title="Editar proyecto"
-                    class="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full text-white shadow-md transition transform hover:scale-110 hover:shadow-lg"
-                    style="background-color: #006400"
-                  >
-                    <i class="bi bi-pencil-square text-base"></i>
-                  </button>
-                  <button
-                    *ngIf="
-                      (proyecto.estado === 'P' || proyecto.estado === 'T') && !proyecto.esCotesista
-                    "
-                    (click)="cancelarProyecto(proyecto.id)"
-                    title="Cancelar proyecto"
-                    class="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full bg-red-100 text-red-700 shadow-md transition transform hover:scale-110 hover:bg-red-200 hover:shadow-lg"
-                  >
-                    <i class="bi bi-x-circle-fill text-base"></i>
-                  </button>
-                  <button
-                    *ngIf="proyecto.estado === 'F'"
-                    (click)="descargarConstancia(proyecto.id)"
-                    title="Revisar proyecto"
-                    class="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 shadow-md transition transform hover:scale-110 hover:bg-blue-200 hover:shadow-lg"
-                  >
-                    <i class="bi bi-download text-base"></i>
-                  </button>
-                  <button
-                    *ngIf="proyecto.esCotesista && proyecto.estado === 'T'"
-                    (click)="verProyectoRevision(proyecto.id)"
-                    title="Aceptar ser cotesista"
-                    class="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full bg-green-100 text-green-700 shadow-md transition transform hover:scale-110 hover:bg-green-200 hover:shadow-lg"
-                  >
-                    <i class="bi bi-check-circle-fill text-base"></i>
-                  </button>
+              <td class="w-48 px-3 py-4 align-middle">
+                <div class="grid w-fit grid-cols-4 gap-2">
+                  <div class="h-9 w-9 shrink-0">
+                    <button
+                      [disabled]="!proyecto.esCotesista"
+                      (click)="verProyecto(proyecto.id)"
+                      title="Editar proyecto"
+                      aria-label="Editar proyecto"
+                      class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 transition-colors enabled:cursor-pointer hover:bg-emerald-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      <i class="bi bi-pencil text-sm" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="h-9 w-9 shrink-0">
+                    <button
+                      [disabled]="!proyecto.esCotesista || (proyecto.estado !== 'P' && proyecto.estado !== 'T')"
+                      (click)="cancelarProyecto(proyecto.id)"
+                      title="Cancelar proyecto"
+                      aria-label="Cancelar proyecto"
+                      class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-600 transition-colors enabled:cursor-pointer enabled:hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      <i class="bi bi-x-lg text-sm" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="h-9 w-9 shrink-0">
+                    <button
+                      [disabled]="!proyecto.esCotesista || proyecto.estado !== 'F'"
+                      (click)="descargarConstancia(proyecto.id)"
+                      title="Descargar constancia"
+                      aria-label="Descargar constancia"
+                      class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-blue-700 transition-colors enabled:cursor-pointer enabled:hover:bg-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      <i class="bi bi-download text-sm" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="h-9 w-9 shrink-0">
+                    <button
+                      [disabled]="!proyecto.esCotesista || proyecto.estado === 'T'"
+                      (click)="verProyectoRevision(proyecto.id, proyecto.estado, proyecto.esCotesista)"
+                      title="Aceptar ser cotesista"
+                      aria-label="Aceptar ser cotesista"
+                      class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-green-200 bg-green-50 text-green-700 transition-colors enabled:cursor-pointer enabled:hover:bg-green-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      <i class="bi bi-check-lg text-sm" aria-hidden="true"></i>
+                    </button>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -128,7 +138,7 @@
       <button
         (click)="paginaAnteriorProyecto()"
         [disabled]="paginaActual === 1"
-        class="w-full md:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
+        class="enabled:cursor-pointer w-full md:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
       >
         ← Anterior
       </button>
@@ -138,7 +148,7 @@
       <button
         (click)="paginaSiguienteProyecto()"
         [disabled]="paginaActual === totalPaginas"
-        class="w-full md:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
+        class="enabled:cursor-pointer w-full md:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
       >
         Siguiente →
       </button>
@@ -155,7 +165,10 @@
       <h2 class="text-lg font-semibold text-gray-800">
         {{ proyectoSeleccionado.idProyecto ? 'Editar' : 'Nuevo' }} Proyecto
       </h2>
-      <button (click)="cerrarModalProyecto()" class="text-gray-400 hover:text-gray-600 transition">
+      <button
+        (click)="cerrarModalProyecto()"
+        class="cursor-pointer text-gray-400 hover:text-gray-600 transition"
+      >
         <i class="bi bi-x-lg text-xl"></i>
       </button>
     </div>
@@ -222,7 +235,7 @@
             type="button"
             (click)="eliminarAlumno()"
             title="Eliminar alumno"
-            class="w-11 h-11 flex items-center justify-center rounded-lg bg-red-100 text-red-700 shadow-sm transition hover:bg-red-200 hover:scale-105"
+            class="cursor-pointer w-11 h-11 flex items-center justify-center rounded-lg bg-red-100 text-red-700 shadow-sm transition hover:bg-red-200 hover:scale-105"
           >
             <i class="bi bi-trash-fill text-base"></i>
           </button>
@@ -263,7 +276,7 @@
             "
             type="button"
             (click)="fileInput.click()"
-            class="px-4 py-2 bg-green-800 text-white rounded-lg hover:bg-green-900 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            class="enabled:cursor-pointer px-4 py-2 bg-green-800 text-white rounded-lg hover:bg-green-900 disabled:opacity-50 disabled:cursor-not-allowed transition"
           >
             Seleccionar documento
           </button>
@@ -282,7 +295,7 @@
               <button
                 type="button"
                 (click)="eliminarArchivo()"
-                class="text-red-500 hover:text-red-700 flex-shrink-0 ml-2"
+                class="cursor-pointer text-red-500 hover:text-red-700 flex-shrink-0 ml-2"
               >
                 <i class="bi bi-trash"></i>
               </button>
@@ -296,13 +309,20 @@
       <button
         type="button"
         (click)="cerrarModalProyecto()"
-        class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+        class="cursor-pointer px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
       >
         Cancelar
       </button>
       <button
+        [disabled]="
+          !(proyectoSeleccionado.nombre || '').trim() ||
+          !(proyectoSeleccionado.descripcion || '').trim() ||
+          !profesorSeleccionado.codigo ||
+          !alumnoSeleccionado.codigo ||
+          (!proyectoSeleccionado.idProyecto && !archivoSeleccionado)
+        "
         (click)="guardarProyecto()"
-        class="px-4 py-2 text-white rounded-lg shadow-sm transition hover:opacity-90"
+        class="px-4 py-2 text-white rounded-lg shadow-sm transition enabled:cursor-pointer enabled:hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
         style="background-color: #006400"
       >
         Guardar
@@ -322,7 +342,10 @@
         <i class="bi bi-journal-text text-green-700"></i>
         Detalles del Proyecto
       </h2>
-      <button (click)="cerrarModal()" class="text-gray-400 hover:text-gray-600 transition">
+      <button
+        (click)="cerrarModal()"
+        class="cursor-pointer text-gray-400 hover:text-gray-600 transition"
+      >
         <i class="bi bi-x-lg text-xl"></i>
       </button>
     </div>
@@ -373,7 +396,7 @@
           </div>
           <button
             type="button"
-            class="text-green-700 hover:text-green-900 flex-shrink-0 ml-2 transition"
+            class="cursor-pointer text-green-700 hover:text-green-900 flex-shrink-0 ml-2 transition"
             title="Descargar documento"
           >
             <i class="bi bi-download text-lg"></i>
@@ -386,14 +409,15 @@
       <button
         type="button"
         (click)="rechazarProyecto()"
-        class="px-4 py-2 rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition"
+        class="cursor-pointer px-4 py-2 rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition"
       >
         Rechazar
       </button>
       <button
         type="button"
         (click)="aprobarProyecto()"
-        class="px-4 py-2 rounded-lg text-white shadow-sm hover:opacity-90 active:scale-95 transition"
+        [disabled]="estadoProyectoRevision == 'T' || estadoProyectoRevision == 'P' || !esCotesistaDelProyecto"
+        class="px-4 py-2 rounded-lg text-white shadow-sm enabled:cursor-pointer enabled:hover:opacity-90 enabled:active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
         style="background-color: #006400"
       >
         Aprobar

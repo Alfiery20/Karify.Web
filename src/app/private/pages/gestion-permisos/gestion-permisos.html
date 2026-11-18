@@ -44,7 +44,7 @@
                 <th class="px-4 py-3 text-center font-semibold w-20">ID</th>
                 <th class="px-6 py-3 text-left font-semibold">Nombre</th>
                 <th class="px-6 py-3 text-center font-semibold w-32">Estado</th>
-                <th class="px-6 py-3 text-center font-semibold w-36">Acciones</th>
+                <th class="w-28 px-3 py-3 text-center font-semibold">Acciones</th>
               </tr>
             </thead>
           </table>
@@ -69,31 +69,32 @@
                       {{ rol.estado ? 'Activo' : 'Inactivo' }}
                     </span>
                   </td>
-                  <td class="px-6 py-4 w-36">
-                    <div class="flex items-center justify-center gap-3">
+                  <td class="w-28 px-3 py-4">
+                    <div class="grid w-fit grid-cols-2 gap-2">
                       <button
                         (click)="verRol(rol.id)"
                         title="Editar rol"
-                        class="w-9 h-9 flex items-center justify-center rounded-full text-white shadow-sm transition transform hover:scale-110 hover:shadow-md"
-                        style="background-color: #006400"
+                        aria-label="Editar rol"
+                        class="cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 transition-colors hover:bg-emerald-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-1"
                       >
-                        <i class="bi bi-pencil text-sm"></i>
+                        <i class="bi bi-pencil text-sm" aria-hidden="true"></i>
                       </button>
                       <button
                         (click)="eliminarRol(rol)"
                         [title]="rol.estado ? 'Desactivar rol' : 'Reactivar rol'"
-                        class="w-9 h-9 flex items-center justify-center rounded-full shadow-sm transition transform hover:scale-110 hover:shadow-md"
+                        [attr.aria-label]="rol.estado ? 'Desactivar rol' : 'Reactivar rol'"
+                        class="cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
                         [ngClass]="
                           rol.estado
-                            ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            ? 'border-red-200 bg-red-50 text-red-600 hover:bg-red-100 focus-visible:ring-red-500'
+                            : 'border-green-200 bg-green-50 text-green-700 hover:bg-green-100 focus-visible:ring-green-600'
                         "
                       >
                         <ng-container *ngIf="rol.estado; else iconoAlternativo">
-                          <i class="bi bi-trash text-sm"></i>
+                          <i class="bi bi-trash text-sm" aria-hidden="true"></i>
                         </ng-container>
                         <ng-template #iconoAlternativo>
-                          <i class="bi bi-arrow-counterclockwise text-sm"></i>
+                          <i class="bi bi-arrow-counterclockwise text-sm" aria-hidden="true"></i>
                         </ng-template>
                       </button>
                     </div>
@@ -116,7 +117,7 @@
       <button
         (click)="paginaAnterior()"
         [disabled]="paginaActual === 1"
-        class="cursor-pointer w-full md:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
+        class="enabled:cursor-pointer w-full md:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
       >
         ← Anterior
       </button>
@@ -126,7 +127,7 @@
       <button
         (click)="paginaSiguiente()"
         [disabled]="paginaActual === totalPaginas"
-        class="cursor-pointer w-full md:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
+        class="enabled:cursor-pointer w-full md:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
       >
         Siguiente →
       </button>
@@ -141,7 +142,10 @@
   >
     <div class="flex justify-between items-center mb-5">
       <h2 class="text-lg font-semibold text-gray-800">{{ tituloModal }} Rol</h2>
-      <button (click)="cerrarModal()" class="text-gray-400 hover:text-gray-600 transition">
+      <button
+        (click)="cerrarModal()"
+        class="cursor-pointer text-gray-400 hover:text-gray-600 transition"
+      >
         <i class="bi bi-x-lg text-xl"></i>
       </button>
     </div>
@@ -182,13 +186,14 @@
     <div class="flex justify-end gap-3 mt-6">
       <button
         (click)="cerrarModal()"
-        class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+        class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition cursor-pointer"
       >
         Cancelar
       </button>
       <button
         (click)="guardarRol()"
-        class="px-4 py-2 text-white rounded-lg shadow-sm transition hover:opacity-90"
+        [disabled]="!rolSeleccionado.nombre"
+        class="px-4 py-2 text-white rounded-lg shadow-sm transition enabled:hover:opacity-90 enabled:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         style="background-color: #006400"
       >
         Guardar

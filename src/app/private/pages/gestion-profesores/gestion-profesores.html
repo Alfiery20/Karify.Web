@@ -70,7 +70,7 @@
         <div class="md:col-span-2">
           <button
             (click)="buscarProfesor()"
-            class="h-10 w-full px-4 text-sm font-medium text-white rounded-lg shadow-sm transition hover:opacity-90 active:scale-95"
+            class="cursor-pointer h-10 w-full px-4 text-sm font-medium text-white rounded-lg shadow-sm transition hover:opacity-90 active:scale-95"
             style="background-color: #006400"
             aria-label="Ejecutar búsqueda"
           >
@@ -81,7 +81,7 @@
         <div class="md:col-span-12 flex justify-end">
           <button
             (click)="abrirModalProfesor()"
-            class="inline-flex items-center gap-2 h-10 px-5 text-sm font-semibold text-white rounded-lg transition hover:opacity-90 active:scale-95"
+            class="cursor-pointer inline-flex items-center gap-2 h-10 px-5 text-sm font-semibold text-white rounded-lg transition hover:opacity-90 active:scale-95"
             style="background-color: #006400"
           >
             <i class="bi bi-plus-lg"></i>
@@ -108,7 +108,7 @@
               <th class="px-5 py-3 text-center font-medium tracking-wide w-24">Rol</th>
               <th class="px-5 py-3 text-center font-medium tracking-wide w-24">Perfil Completo</th>
               <th class="px-5 py-3 text-center font-medium tracking-wide w-24">Estado</th>
-              <th class="px-5 py-3 text-center font-medium tracking-wide w-32">Acciones</th>
+              <th class="w-28 px-3 py-3 text-center font-medium tracking-wide">Acciones</th>
             </tr>
           </thead>
 
@@ -177,22 +177,23 @@
                   {{ profesor.estado ? 'Activo' : 'Inactivo' }}
                 </span>
               </td>
-              <td class="px-5 py-3.5 w-32 align-middle">
-                <div class="flex items-center justify-center gap-3">
+              <td class="w-28 px-3 py-3.5 align-middle">
+                <div class="grid w-fit grid-cols-2 gap-2">
                   <button
                     (click)="verProfesor(profesor.idProfesor)"
-                    class="w-11 h-11 flex items-center justify-center rounded-lg text-white transition hover:opacity-90 hover:scale-105 active:scale-95 shadow-sm cursor-pointer"
-                    style="background-color: #006400"
                     title="Editar"
+                    aria-label="Editar profesor"
+                    class="cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 transition-colors hover:bg-emerald-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-1"
                   >
-                    <i class="bi bi-pencil text-lg"></i>
+                    <i class="bi bi-pencil text-sm" aria-hidden="true"></i>
                   </button>
                   <button
                     (click)="eliminarProfesor(profesor)"
-                    class="w-11 h-11 flex items-center justify-center rounded-lg bg-red-50 text-red-500 border border-red-200 transition hover:bg-red-100 hover:scale-105 active:scale-95 shadow-sm cursor-pointer"
                     title="Eliminar"
+                    aria-label="Eliminar profesor"
+                    class="cursor-pointer inline-flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-600 transition-colors hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1"
                   >
-                    <i class="bi bi-trash text-lg"></i>
+                    <i class="bi bi-trash text-sm" aria-hidden="true"></i>
                   </button>
                 </div>
               </td>
@@ -214,7 +215,7 @@
         <button
           (click)="paginaAnteriorProfesor()"
           [disabled]="paginaActual === 1"
-          class="px-3 py-1.5 text-sm bg-white border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          class="enabled:cursor-pointer px-3 py-1.5 text-sm bg-white border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
           ← Anterior
         </button>
@@ -225,7 +226,7 @@
         <button
           (click)="paginaSiguienteProfesor()"
           [disabled]="paginaActual === totalPaginas"
-          class="px-3 py-1.5 text-sm bg-white border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          class="enabled:cursor-pointer px-3 py-1.5 text-sm bg-white border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
           Siguiente →
         </button>
@@ -247,13 +248,13 @@
       </h2>
       <button
         (click)="cerrarModalProfesor()"
-        class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition"
+        class="cursor-pointer w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition"
       >
         <i class="bi bi-x-lg text-base"></i>
       </button>
     </div>
 
-    <form class="px-6 py-5 space-y-4">
+    <form #formProfesor="ngForm" class="px-6 py-5 space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-medium text-gray-600 mb-1.5">
@@ -317,7 +318,7 @@
             class="h-10 w-full px-3 text-sm rounded-lg border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-green-700 focus:border-green-700 focus:outline-none transition"
             aria-label="Seleccionar rol"
           >
-            <option value="0">Todos los roles</option>
+            <option value="0" [disabled]="true">Todos los roles</option>
             <option value="1">Administrador</option>
             <option value="2">Profesor</option>
           </select>
@@ -328,14 +329,15 @@
         <button
           type="button"
           (click)="cerrarModalProfesor()"
-          class="px-4 py-2 text-sm rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-50 transition"
+          class="cursor-pointer px-4 py-2 text-sm rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-50 transition"
         >
           Cancelar
         </button>
         <button
           type="button"
           (click)="guardarProfesor()"
-          class="px-4 py-2 text-sm font-semibold text-white rounded-lg transition hover:opacity-90 active:scale-95"
+          [disabled]="formProfesor.invalid"
+          class="px-4 py-2 text-sm font-semibold text-white rounded-lg transition enabled:cursor-pointer enabled:hover:opacity-90 enabled:active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           style="background-color: #006400"
         >
           Guardar

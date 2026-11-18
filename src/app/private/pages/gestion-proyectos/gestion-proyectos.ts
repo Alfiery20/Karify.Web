@@ -30,6 +30,8 @@ export class GestionProyectos implements OnInit {
   alumnoSeleccionado: ObtenerAlumnoResponse = {} as ObtenerAlumnoResponse;
 
   revisionSeleccionada: VerProyectoRevisionResponse = {} as VerProyectoRevisionResponse;
+  estadoProyectoRevision: string = '';
+  esCotesistaDelProyecto: boolean = false;
 
   searchProyecto: string = '';
   searchProfesor: string = '';
@@ -201,6 +203,8 @@ export class GestionProyectos implements OnInit {
   }
 
   agregarProyecto(): void {
+    console.log(this.alumnoSeleccionado);
+    
     var request: AgregarProyectoRequest = {
       nombre: this.proyectoSeleccionado.nombre || '',
       descripcion: this.proyectoSeleccionado.descripcion || '',
@@ -318,7 +322,10 @@ export class GestionProyectos implements OnInit {
     });
   }
 
-  verProyectoRevision(idProyecto: number): void {
+  verProyectoRevision(idProyecto: number, estado: string, esCotesista: boolean): void {
+    this.estadoProyectoRevision = estado;
+    this.esCotesistaDelProyecto = esCotesista;
+
     this.proyectoService.VerProyectoRevision(idProyecto).subscribe((response) => {
       this.revisionSeleccionada = {
         idProyecto: response.idProyecto,
@@ -345,6 +352,8 @@ export class GestionProyectos implements OnInit {
   cerrarModal(): void {
     this.isModalOpen = false;
     this.revisionSeleccionada = {} as VerProyectoRevisionResponse;
+    this.estadoProyectoRevision = '';
+    this.esCotesistaDelProyecto = false;
   }
 
   aprobarProyecto(): void {

@@ -40,7 +40,7 @@
               <th class="px-6 py-3 text-left font-semibold w-48">Alumno</th>
               <th class="px-6 py-3 text-center font-semibold w-44">Fecha de Presentación</th>
               <th class="px-6 py-3 text-center font-semibold w-32">Estado</th>
-              <th class="px-6 py-3 text-center font-semibold w-36">Opciones</th>
+              <th class="w-28 px-3 py-3 text-center font-semibold">Opciones</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
@@ -66,16 +66,16 @@
                   {{ convertirEstado(revision.estado) }}
                 </span>
               </td>
-              <td class="px-6 py-4 text-center align-middle">
+              <td class="w-28 px-3 py-4 text-center align-middle">
                 <button
-                  *ngIf="revision.estado === 'P'"
+                  [disabled]="revision.estado !== 'P'"
                   (click)="verProyectoRevision(revision.id)"
-                  class="px-4 py-2 text-sm text-white rounded-lg shadow-sm transition hover:opacity-90 active:scale-95"
-                  style="background-color: #006400"
+                  title="Ver detalles"
+                  aria-label="Ver detalles del proyecto"
+                  class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 transition-colors enabled:cursor-pointer enabled:hover:bg-emerald-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  Ver Detalles
+                  <i class="bi bi-eye text-sm" aria-hidden="true"></i>
                 </button>
-                <span *ngIf="revision.estado !== 'P'" class="text-xs text-gray-400">—</span>
               </td>
             </tr>
 
@@ -93,7 +93,7 @@
       <button
         (click)="paginaAnterior()"
         [disabled]="paginaActual === 1"
-        class="w-full md:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
+        class="enabled:cursor-pointer w-full md:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
       >
         ← Anterior
       </button>
@@ -103,7 +103,7 @@
       <button
         (click)="paginaSiguiente()"
         [disabled]="paginaActual === totalPaginas"
-        class="w-full md:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
+        class="enabled:cursor-pointer w-full md:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
       >
         Siguiente →
       </button>
@@ -122,7 +122,10 @@
         <i class="bi bi-journal-text text-green-700"></i>
         Detalles del Proyecto
       </h2>
-      <button (click)="cerrarModal()" class="text-gray-400 hover:text-gray-600 transition">
+      <button
+        (click)="cerrarModal()"
+        class="cursor-pointer text-gray-400 hover:text-gray-600 transition"
+      >
         <i class="bi bi-x-lg text-xl"></i>
       </button>
     </div>
@@ -174,7 +177,7 @@
           <button
             type="button"
             (click)="descargarArchivo(revisionSeleccionada)"
-            class="text-green-700 hover:text-green-900 flex-shrink-0 ml-2 transition"
+            class="cursor-pointer text-green-700 hover:text-green-900 flex-shrink-0 ml-2 transition"
             title="Descargar documento"
           >
             <i class="bi bi-download text-lg"></i>
@@ -187,14 +190,14 @@
       <button
         type="button"
         (click)="rechazarProyecto()"
-        class="px-4 py-2 rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition"
+        class="cursor-pointer px-4 py-2 rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition"
       >
         Rechazar
       </button>
       <button
         type="button"
         (click)="aprobarProyecto()"
-        class="px-4 py-2 rounded-lg text-white shadow-sm hover:opacity-90 active:scale-95 transition"
+        class="cursor-pointer px-4 py-2 rounded-lg text-white shadow-sm hover:opacity-90 active:scale-95 transition"
         style="background-color: #006400"
       >
         Aprobar
