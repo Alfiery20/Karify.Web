@@ -40,14 +40,14 @@
 
     <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
       <div class="overflow-auto max-h-[500px]">
-        <table class="w-full text-sm table-fixed min-w-[820px]">
+        <table class="w-full text-sm table-fixed min-w-[900px]">
           <thead class="text-white sticky top-0 z-10" style="background-color: #006400">
             <tr>
               <th class="px-6 py-3 text-center font-semibold w-20">ID</th>
               <th class="px-6 py-3 text-left font-semibold">Título</th>
               <th class="px-6 py-3 text-left font-semibold w-40">Profesor</th>
               <th class="px-6 py-3 text-center font-semibold w-44">Fecha de Registro</th>
-              <th class="px-6 py-3 text-center font-semibold w-32">Estado</th>
+              <th class="px-3 py-3 text-center font-semibold w-48">Estado</th>
               <th class="w-48 px-3 py-3 text-center font-semibold">Acciones</th>
             </tr>
           </thead>
@@ -66,11 +66,12 @@
               <td class="px-6 py-4 text-gray-500 text-xs text-center align-middle">
                 {{ proyecto.fechaRegistro | date: 'dd/MM/yyyy HH:mm a' }}
               </td>
-              <td class="px-6 py-4 text-center align-middle">
+              <td class="px-3 py-4 text-center align-middle">
                 <span
-                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ring-1 ring-inset"
+                  class="inline-flex max-w-full items-center justify-center gap-2 rounded-full px-3 py-1.5 text-center text-xs font-semibold leading-tight ring-1 ring-inset"
                   [ngClass]="obtenerClaseEstado(proyecto.estado)"
                 >
+                  <span class="h-2 w-2 shrink-0 rounded-full bg-current" aria-hidden="true"></span>
                   {{ convertirEstado(proyecto.estado) }}
                 </span>
               </td>
@@ -100,7 +101,7 @@
                   </div>
                   <div class="h-9 w-9 shrink-0">
                     <button
-                      [disabled]="!proyecto.esCotesista || proyecto.estado !== 'F'"
+                      [disabled]=" proyecto.estado !== 'F'"
                       (click)="descargarConstancia(proyecto.id)"
                       title="Descargar constancia"
                       aria-label="Descargar constancia"
@@ -111,7 +112,7 @@
                   </div>
                   <div class="h-9 w-9 shrink-0">
                     <button
-                      [disabled]="!proyecto.esCotesista || proyecto.estado === 'T'"
+                      [disabled]="!proyecto.esCotesista || proyecto.estado !== 'T'"
                       (click)="verProyectoRevision(proyecto.id, proyecto.estado, proyecto.esCotesista)"
                       title="Aceptar ser cotesista"
                       aria-label="Aceptar ser cotesista"
@@ -318,7 +319,6 @@
           !(proyectoSeleccionado.nombre || '').trim() ||
           !(proyectoSeleccionado.descripcion || '').trim() ||
           !profesorSeleccionado.codigo ||
-          !alumnoSeleccionado.codigo ||
           (!proyectoSeleccionado.idProyecto && !archivoSeleccionado)
         "
         (click)="guardarProyecto()"
@@ -416,7 +416,7 @@
       <button
         type="button"
         (click)="aprobarProyecto()"
-        [disabled]="estadoProyectoRevision == 'T' || estadoProyectoRevision == 'P' || !esCotesistaDelProyecto"
+        [disabled]="estadoProyectoRevision !== 'T' || !esCotesistaDelProyecto"
         class="px-4 py-2 rounded-lg text-white shadow-sm enabled:cursor-pointer enabled:hover:opacity-90 enabled:active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
         style="background-color: #006400"
       >

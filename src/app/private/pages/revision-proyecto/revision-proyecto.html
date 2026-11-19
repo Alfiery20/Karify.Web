@@ -32,14 +32,14 @@
 
     <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
       <div class="overflow-auto max-h-[500px]">
-        <table class="w-full text-sm table-fixed min-w-[820px]">
+        <table class="w-full text-sm table-fixed min-w-[900px]">
           <thead class="text-white sticky top-0 z-10" style="background-color: #006400">
             <tr>
               <th class="px-6 py-3 text-center font-semibold w-20">ID</th>
               <th class="px-6 py-3 text-left font-semibold">Nombre del Proyecto</th>
               <th class="px-6 py-3 text-left font-semibold w-48">Alumno</th>
               <th class="px-6 py-3 text-center font-semibold w-44">Fecha de Presentación</th>
-              <th class="px-6 py-3 text-center font-semibold w-32">Estado</th>
+              <th class="px-3 py-3 text-center font-semibold w-48">Estado</th>
               <th class="w-28 px-3 py-3 text-center font-semibold">Opciones</th>
             </tr>
           </thead>
@@ -58,11 +58,12 @@
               <td class="px-6 py-4 text-gray-500 text-xs text-center align-middle">
                 {{ revision.fechaRegistro | date: 'dd/MM/yyyy hh:mm a' }}
               </td>
-              <td class="px-6 py-4 text-center align-middle">
+              <td class="px-3 py-4 text-center align-middle">
                 <span
+                  class="inline-flex max-w-full items-center justify-center gap-2 rounded-full px-3 py-1.5 text-center text-xs font-semibold leading-tight ring-1 ring-inset"
                   [ngClass]="obtenerClaseEstado(revision.estado)"
-                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
                 >
+                  <span class="h-2 w-2 shrink-0 rounded-full bg-current" aria-hidden="true"></span>
                   {{ convertirEstado(revision.estado) }}
                 </span>
               </td>
