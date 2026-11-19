@@ -42,7 +42,8 @@ const routes: Routes = [
             },
             {
                 path: 'configuracion',
-                component: Configuracion
+                component: Configuracion,
+                canActivate: [authorizeGuard]
             }
         ]
     }
