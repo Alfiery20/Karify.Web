@@ -203,8 +203,6 @@ export class GestionProyectos implements OnInit {
   }
 
   agregarProyecto(): void {
-    console.log(this.alumnoSeleccionado);
-    
     var request: AgregarProyectoRequest = {
       nombre: this.proyectoSeleccionado.nombre || '',
       descripcion: this.proyectoSeleccionado.descripcion || '',
